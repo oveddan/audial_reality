@@ -2,6 +2,7 @@
 var path = require('path')
 var extend = require('lodash/object/extend')
 var webpack = require('webpack')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var PATHS = {
   OUTPUT : './dist',
   SOURCE : './src'
@@ -23,7 +24,8 @@ var config = {
       {
         test : /\.css$/,
         exclude : /node_modules/,
-        loader : 'style!css'
+        loader : ExtractTextPlugin.extract('style-loader',
+          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
       }
     ]
   },
@@ -32,7 +34,13 @@ var config = {
     alias : {
       src : path.resolve(__dirname, './src')
     }
-  }
+  },
+  plugins : [
+    new ExtractTextPlugin('style.css', { allChunks : true })
+  ],
+  postcss : [
+    require('autoprefixer')
+  ]
 }
 
 var buildConfig = extend({}, config, {
@@ -41,10 +49,10 @@ var buildConfig = extend({}, config, {
 
 var devConfig = extend({}, buildConfig, {
   entry : ['webpack-hot-middleware/client'].concat(buildConfig.entry),
-  plugins: [
+  plugins : [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
-  ]
+  ].concat(buildConfig.plugins)
 })
 
 module.exports = {
