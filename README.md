@@ -8,6 +8,7 @@ A boilerplate setup including my choice technologies:
 - PhantomJS 2
 - React
 - PostCSS
+- CSS Modules
 - ES2015+ via Babel
 - Hot module reloading
 
