@@ -1,16 +1,18 @@
 /* eslint-disable no-var,object-shorthand */
+
 var path = require('path')
 var extend = require('lodash/object/extend')
 var webpack = require('webpack')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
+
 var PATHS = {
-  OUTPUT : './dist',
-  SOURCE : './src'
+  OUTPUT : path.join(__dirname, 'dist'),
+  SOURCE : path.join(__dirname, 'src')
 }
 
 var config = {
   output : {
-    path : path.resolve(__dirname, PATHS.OUTPUT),
+    path : PATHS.OUTPUT,
     publicPath : '/static/',
     filename : 'main.js'
   },
@@ -24,15 +26,15 @@ var config = {
       {
         test : /\.css$/,
         exclude : /node_modules/,
-        loader : ExtractTextPlugin.extract('style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
+        loader : ExtractTextPlugin.extract('style',
+          'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss')
       }
     ]
   },
   resolve : {
     extensions : ['', '.js', '.jsx'],
     alias : {
-      src : path.resolve(__dirname, './src')
+      src : PATHS.SOURCE
     }
   },
   plugins : [
@@ -48,7 +50,9 @@ var buildConfig = extend({}, config, {
 })
 
 var devConfig = extend({}, buildConfig, {
-  entry : ['webpack-hot-middleware/client'].concat(buildConfig.entry),
+  entry : [
+    'webpack-hot-middleware/client'
+  ].concat(buildConfig.entry),
   plugins : [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
