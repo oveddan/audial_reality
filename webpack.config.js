@@ -38,10 +38,7 @@ var config = {
     }
   },
   plugins : [
-    new ExtractTextPlugin('style.css', { allChunks : true }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    })
+    new ExtractTextPlugin('style.css', { allChunks : true })
   ],
   postcss : [
     require('postcss-normalize'),
