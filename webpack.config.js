@@ -41,6 +41,7 @@ var config = {
     new ExtractTextPlugin('style.css', { allChunks : true })
   ],
   postcss : [
+    require('postcss-normalize'),
     require('autoprefixer')
   ]
 }
