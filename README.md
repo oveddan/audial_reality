@@ -1,4 +1,4 @@
-A boilerplate setup including my choice technologies:
+A boilerplate setup including our choice technologies:
 
 - Webpack
 - JSCS
