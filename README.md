@@ -1,16 +1,16 @@
 A web boilerplate setup including the following technologies:
 
-- Webpack
-- JSCS
-- ESLint
-- Karma
-- Mocha, Chai, Sinon
-- PhantomJS 2
-- React
-- PostCSS
-- CSS Modules
-- ES2015+ via Babel
-- Hot module reloading
+- [Webpack](https://webpack.github.io)
+- [JSCS](http://jscs.info)
+- [ESLint](http://eslint.org)
+- [Karma](http://karma-runner.github.io/0.13/index.html)
+- [Mocha, Chai, Sinon](http://chaijs.com/plugins/sinon-chai)
+- [PhantomJS 2](http://phantomjs.org)
+- [React](http://facebook.github.io/react/)
+- [PostCSS](https://github.com/postcss/postcss)
+- [CSS Modules](https://github.com/css-modules/css-modules)
+- [ES2015+ via Babel](https://babeljs.io)
+- [Hot module reloading](https://github.com/gaearon/react-transform-hmr)
 
 ## Development
 
