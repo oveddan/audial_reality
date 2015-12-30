@@ -1,3 +1,5 @@
+![TravisCI build status](https://travis-ci.org/stride-nyc/web-boilerplate-2016.svg)
+
 A web boilerplate setup including the following technologies:
 
 - [Webpack](https://webpack.github.io)
@@ -11,6 +13,12 @@ A web boilerplate setup including the following technologies:
 - [CSS Modules](https://github.com/css-modules/css-modules)
 - [ES2015+ via Babel](https://babeljs.io)
 - [Hot module reloading](https://github.com/gaearon/react-transform-hmr)
+
+## Setup
+
+- Requires [node.js](nodejs.org) to be installed
+- `npm install` - Installs all dependencies
+- `rm .travis.yml` - Removes Stride's build configuration
 
 ## Development
 
