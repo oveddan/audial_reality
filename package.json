@@ -1,6 +1,6 @@
 {
   "name": "webapp-boilerplate",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A boilerplate for webpack, testing, linters, React.",
   "main": "webpack.config.js",
   "dependencies": {
