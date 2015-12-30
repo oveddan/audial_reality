@@ -36,7 +36,3 @@ A web boilerplate setup including the following technologies:
 
 - `npm run lint` - Run linting with JSCS and ESLint
 
-## CI
-
-- `npm run ci` - Runs continuous integration tasks: currently linting and unit tests.
-

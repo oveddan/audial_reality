@@ -43,7 +43,7 @@
     "webpack-hot-middleware": "^2.6.0"
   },
   "scripts": {
-    "ci": "npm run lint && npm test",
+    "ci": "env PHANTOMJS_BIN=/usr/local/phantomjs/bin/phantomjs npm run lint && npm test",
     "lint": "eslint --ext .jsx,.js dev-server src && jscs -x dev-server src",
     "start": "env NODE_ENV=development node dev-server",
     "test": "env NODE_ENV=test karma start karma.conf.js",
