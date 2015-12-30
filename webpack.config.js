@@ -1,4 +1,4 @@
-/* eslint-disable no-var,object-shorthand */
+/* eslint-disable no-var,object-shorthand,prefer-template */
 
 var path = require('path')
 var extend = require('lodash/object/extend')
@@ -47,7 +47,7 @@ var config = {
 }
 
 var buildConfig = extend({}, config, {
-  entry : [`${PATHS.SOURCE}/app.jsx`]
+  entry : [PATHS.SOURCE + '/app.jsx']
 })
 
 var devConfig = extend({}, buildConfig, {
@@ -65,5 +65,5 @@ module.exports = {
   devConfig : devConfig
 }
 
-/* eslint-enable no-var,object-shorthand */
+/* eslint-enable no-var,object-shorthand,prefer-template */
 
