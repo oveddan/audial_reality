@@ -1,4 +1,4 @@
-A boilerplate setup including our choice technologies:
+A web boilerplate setup including the following technologies:
 
 - Webpack
 - JSCS
@@ -27,4 +27,8 @@ A boilerplate setup including our choice technologies:
 ## Linting
 
 - `npm run lint` - Run linting with JSCS and ESLint
+
+## CI
+
+- `npm run ci` - Runs continuous integration tasks: currently linting and unit tests.
 
