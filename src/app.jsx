@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { render } from 'react-dom'
 import styles from './app.css'
 
 export default class App extends Component {
@@ -8,4 +9,7 @@ export default class App extends Component {
   }
 
 }
+
+if (process.env.NODE_ENV !== 'test')
+  render(<App />, document.getElementById('main'))
 
