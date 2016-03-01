@@ -19,7 +19,7 @@ app.use(hotMiddleware(compiler))
 
 app.get('*', (_r, res) => res.sendFile(path.resolve(__dirname, '../src/index.html')))
 
-app.listen(3000, 'localhost', (err) => {
+app.listen(3000, 'localhost', err => {
   if (err)
     console.log(err)
 

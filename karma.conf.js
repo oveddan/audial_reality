@@ -5,11 +5,11 @@ var webpackConfig = require('./webpack.config').buildConfig
 module.exports = function (config) {
   config.set({
     basePath : '',
-    frameworks : ['mocha', 'sinon-chai'],
+    frameworks : ['mocha'],
     files : [
       'node_modules/es5-shim/es5-shim.min.js',
       'node_modules/react/dist/react.min.js',
-      'src/**/*_test.js'
+      'src/test-helpers/test-index.js'
     ],
     webpack : webpackConfig,
     webpackMiddleware : {
@@ -18,9 +18,9 @@ module.exports = function (config) {
       }
     },
     preprocessors : {
-      'src/**/*_test.js' : ['webpack']
+      'src/test-helpers/test-index.js' : ['webpack']
     },
-    reporters : ['progress', 'notify'],
+    reporters : ['mocha', 'notify'],
     port : 9876,
     colors : true,
     logLevel : config.LOG_INFO,

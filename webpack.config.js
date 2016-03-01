@@ -28,19 +28,24 @@ var config = {
         exclude : /node_modules/,
         loader : ExtractTextPlugin.extract('style',
           'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss')
+      },
+      {
+        test : /sinon\.js$/,
+        loader : 'imports?define=>false,require=>false'
       }
     ]
   },
   resolve : {
     extensions : ['', '.js', '.jsx'],
     alias : {
+      sinon : 'sinon/pkg/sinon',
       src : PATHS.SOURCE
     }
   },
   plugins : [
     new ExtractTextPlugin('style.css', { allChunks : true }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+      'process.env.NODE_ENV' : JSON.stringify(process.env.NODE_ENV)
     })
   ],
   postcss : [

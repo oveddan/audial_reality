@@ -15,13 +15,11 @@
             2,
             "never"
         ],
-        "curly": [2, "multi"],
         "func-style": [2, "expression"],
         "new-parens": 2,
         "no-array-constructor": 2,
         "no-mixed-spaces-and-tabs": 2,
         "no-multiple-empty-lines": 2,
-        "no-var": 2,
         "no-var": 2,
         "prefer-template": 2,
         "constructor-super": 2,
@@ -90,13 +88,13 @@
         "no-undef": 2,
         "no-delete-var": 2,
         "no-unused-vars": 2,
-        "arrow-parens": [2, "always"],
+        "arrow-parens": [2, "as-needed"],
         "arrow-spacing": 2,
         "object-curly-spacing": [2, "always"],
         "react/jsx-boolean-value": 2,
         "react/jsx-closing-bracket-location": 2,
         "react/jsx-curly-spacing": 1,
-        "react/jsx-indent-props": 2,
+        "react/jsx-indent-props": [2, 2],
         "react/jsx-no-duplicate-props": 1,
         "react/jsx-no-undef": 2,
         "jsx-quotes": [2, "prefer-single"],
@@ -117,23 +115,26 @@
     },
     "env": {
         "es6": true,
-        "browser": true,
         "node": true,
-        "mocha": true
+        "mocha": true,
+        "browser": true
     },
     "globals": {
         "chai": true,
         "expect": true,
-        "sinon": true,
-        "jasmine": true
+        "sinon": true
     },
-    "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true,
-        "modules": true,
-        "blockBindings": true
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaFeatures": {
+          "experimentalObjectRestSpread": true,
+          "blockBindings": true,
+          "jsx": true
+      },
     },
     "plugins": [
-        "react"
+      "react"
     ]
 }
+
