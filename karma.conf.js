@@ -1,6 +1,6 @@
 /* eslint-disable no-var */
 
-var webpackConfig = require('./webpack.config').buildConfig
+var webpackConfig = require('./webpack.config').testConfig
 
 module.exports = function (config) {
   config.set({
@@ -23,7 +23,7 @@ module.exports = function (config) {
       }
     },
     preprocessors : {
-      'src/test-helpers/test-index.js' : ['webpack']
+      'src/test-helpers/test-index.js' : ['webpack', 'sourcemap']
     },
     reporters : ['mocha', 'notify'],
     port : 9876,
