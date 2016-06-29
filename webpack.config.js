@@ -36,7 +36,7 @@ var config = {
     ]
   },
   resolve : {
-    extensions : ['', '.js', '.jsx'],
+    extensions : ['', '.js'],
     alias : {
       sinon : 'sinon/pkg/sinon',
       src : PATHS.SOURCE
@@ -55,7 +55,7 @@ var config = {
 }
 
 var buildConfig = assign({}, config, {
-  entry : [PATHS.SOURCE + '/app.jsx']
+  entry : [PATHS.SOURCE + '/index.js']
 })
 
 var devConfig = assign({}, buildConfig, {
@@ -77,4 +77,3 @@ module.exports.devConfig = devConfig
 module.exports.testConfig = testConfig
 
 /* eslint-enable no-var,object-shorthand,prefer-template */
-

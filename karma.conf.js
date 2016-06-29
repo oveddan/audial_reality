@@ -7,10 +7,8 @@ module.exports = function (config) {
     basePath : '',
     frameworks : ['mocha'],
     files : [
-      'node_modules/es5-shim/es5-shim.min.js',
-      'node_modules/react/dist/react.min.js',
       {
-        pattern : 'src/test-helpers/test-index.js',
+        pattern : 'lib/test-helpers/test-index.js',
         watched : false,
         included : true,
         served : true
@@ -20,10 +18,11 @@ module.exports = function (config) {
     webpackMiddleware : {
       stats : {
         colors : true
-      }
+      },
+      noInfo: true
     },
     preprocessors : {
-      'src/test-helpers/test-index.js' : ['webpack', 'sourcemap']
+      'lib/test-helpers/test-index.js' : ['webpack', 'sourcemap']
     },
     reporters : ['mocha', 'notify'],
     port : 9876,

@@ -2,7 +2,7 @@
   "name": "webapp-boilerplate",
   "version": "0.0.6",
   "description": "A boilerplate for webpack, testing, linters, React.",
-  "main": "webpack.config.js",
+  "main": "src/index.js",
   "dependencies": {
     "react": "^15.1.0",
     "react-dom": "^0.14.3"
