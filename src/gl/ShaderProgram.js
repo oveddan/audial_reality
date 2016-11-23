@@ -40,4 +40,8 @@ export default class ShaderProgram {
   getAttribute(name) {
     return this.gl.getAttribLocation(this.id, name)
   }
+
+  getUniform(name) {
+    return this.gl.getUniformLocation(this.id, name)
+  }
 }

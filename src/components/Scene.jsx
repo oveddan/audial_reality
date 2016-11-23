@@ -33,13 +33,15 @@ export default class Scene extends Component {
   constructor(props) {
     super(props)
 
-    this.childDraws = []
+    this.state = {
+    }
   }
 
   componentDidMount() {
     const gl = initWebGL(this.canvas)
 
     this.gl = gl
+    this.childDraws = []
 
     // Set clear color to black, fully opaque
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
@@ -53,13 +55,17 @@ export default class Scene extends Component {
     initBuffers(gl)
 
     this.draw()
+
+    this.setState({
+      glLoaded: true
+    })
   }
 
   getChildContext() {
     return { 
       gl: this.gl, 
       registerChildDraw: fn => this.registerChildDraw(fn),
-      unregisterChildDraw: fn => this.unregisterChildDraw(fn),
+      unregisterChildDraw: fn => this.unregisterChildDraw(fn)
     }
   }
 
@@ -80,6 +86,10 @@ export default class Scene extends Component {
     //    React.Children.forEach(this.props.children, child => child.draw && child.draw())
     each(this.childDraws, draw => draw(this.gl))
 
+    const error = gl.getError()
+    if (error !== 0)
+      console.log('error:', error)
+
     window.requestAnimationFrame(() => this.draw())
   }
 
@@ -94,8 +104,8 @@ export default class Scene extends Component {
   render() {
     return (
       <div>
-        <canvas width={640} height={480} ref={canvas => { this.canvas = canvas }} />
-        {this.gl && this.props.children}
+        <canvas width={this.props.width} height={this.props.height} ref={canvas => { this.canvas = canvas }} />
+        {this.state.glLoaded && this.props.children}
       </div>
     )
   }

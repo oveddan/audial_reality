@@ -1,36 +1,78 @@
 import React, { Component } from 'react'
 import ShaderProgram from '../gl/ShaderProgram'
 import VertexBufferObject from '../gl/VertexBufferObject'
-
+import ElementArrayBuffer from '../gl/ElementArrayBuffer'
 import vertex from '../shaders/vertex.glsl'
 import fragment from '../shaders/fragment.glsl'
 
+import { vec3, mat4 } from 'gl-matrix'
+
+const verteces = [
+  // Front face
+  -1.0, -1.0,  1.0,
+   1.0, -1.0,  1.0,
+   1.0,  1.0,  1.0,
+  -1.0,  1.0,  1.0,
+  
+  // Back face
+  -1.0, -1.0, -1.0,
+  -1.0,  1.0, -1.0,
+   1.0,  1.0, -1.0,
+   1.0, -1.0, -1.0,
+  
+  // Top face
+  -1.0,  1.0, -1.0,
+  -1.0,  1.0,  1.0,
+   1.0,  1.0,  1.0,
+   1.0,  1.0, -1.0,
+  
+  // Bottom face
+  -1.0, -1.0, -1.0,
+   1.0, -1.0, -1.0,
+   1.0, -1.0,  1.0,
+  -1.0, -1.0,  1.0,
+  
+  // Right face
+   1.0, -1.0, -1.0,
+   1.0,  1.0, -1.0,
+   1.0,  1.0,  1.0,
+   1.0, -1.0,  1.0,
+  
+  // Left face
+  -1.0, -1.0, -1.0,
+  -1.0, -1.0,  1.0,
+  -1.0,  1.0,  1.0,
+  -1.0,  1.0, -1.0
+]
+
+const vertexIndices = [
+  0,  1,  2,      0,  2,  3,    // front
+  4,  5,  6,      4,  6,  7,    // back
+  8,  9,  10,     8,  10, 11,   // top
+  12, 13, 14,     12, 14, 15,   // bottom
+  16, 17, 18,     16, 18, 19,   // right
+  20, 21, 22,     20, 22, 23    // left
+]
 
 export default class Cube extends Component {
-  constructor(props) {
-    super(props)
-
-    this.draw = this.draw.bind(this)
-  }
-
   componentWillMount() {
     const gl = this.context.gl
 
+    this.transformation = mat4.create()
+    mat4.fromScaling(this.transformation, vec3.fromValues(0.5, 0.5, 0.5))
 
     this.shaderProgram = new ShaderProgram(gl, vertex, fragment)
     this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')
     gl.enableVertexAttribArray(this.vertexPositionAttribute)
 
-    const verteces = [
-      0.5,  0.5,  0.0,
-      -0.5, 0.5,  0.0,
-      0.5,  -0.5, 0.0,
-      -0.5, -0.5, 0.0
-    ]
-
     this.vertexBuffer = new VertexBufferObject(gl)
     this.vertexBuffer.update(verteces)
+
+    this.elementArrayBuffer = new ElementArrayBuffer(gl)
+    this.elementArrayBuffer.update(vertexIndices)
   
+    this.draw = this.draw.bind(this)
+    console.log('mounted')
     this.context.registerChildDraw(this.draw)
   }
 
@@ -42,10 +84,17 @@ export default class Cube extends Component {
     this.shaderProgram.bind()
     this.vertexBuffer.bind()
 
-    gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
-    //setMatrixUniforms()
+    const cameraUniform = this.shaderProgram.getUniform('camera')
+    gl.uniformMatrix4fv(cameraUniform, false, this.props.camera)
 
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+    const transformUniform = this.shaderProgram.getUniform('transformation')
+    gl.uniformMatrix4fv(transformUniform, false, this.transformation)
+
+    gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
+
+    this.elementArrayBuffer.bind()
+
+    gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0)
   }
 
   render() { return null }

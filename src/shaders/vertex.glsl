@@ -1,8 +1,10 @@
 attribute vec3 aVertexPosition;
 
-uniform mat4 uMVMatrix;
-uniform mat4 uPMatrix;
+uniform mat4 camera;
+uniform mat4 transformation;
+//uniform mat4 uMVMatrix;
+//uniform mat4 uPMatrix;
 
 void main(void) {
-  gl_Position = /*uPMatrix * uMVMatrix * */vec4(aVertexPosition, 1.0);
+  gl_Position = camera * transformation * vec4(aVertexPosition, 1.0);
 }
