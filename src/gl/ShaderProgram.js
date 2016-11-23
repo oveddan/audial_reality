@@ -17,24 +17,27 @@ const getShader = (gl, source, type) => {
 
 export default class ShaderProgram {
   constructor(gl, vertex, fragment) {
+    this.gl = gl
     // Create the shader program
-    const shaderProgram = gl.createProgram()
-    gl.attachShader(shaderProgram, getShader(gl, vertex, gl.VERTEX_SHADER))
-    gl.attachShader(shaderProgram, getShader(gl, fragment, gl.FRAGMENT_SHADER))
-    gl.linkProgram(shaderProgram)
+    const id = this.id = gl.createProgram()
+    gl.attachShader(id, getShader(gl, vertex, gl.VERTEX_SHADER))
+    gl.attachShader(id, getShader(gl, fragment, gl.FRAGMENT_SHADER))
+    gl.linkProgram(id)
 
     // If creating the shader program failed, alert
 
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(shaderProgram)}`)
+    if (!gl.getProgramParameter(id, gl.LINK_STATUS)) {
+      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(id)}`)
     }
-
-    this.shaderProgram = shaderProgram
 
     this.bind(gl)
   }
 
-  bind(gl) {
-    gl.useProgram(this.shaderProgram)
+  bind() {
+    this.gl.useProgram(this.id)
+  }
+
+  getAttribute(name) {
+    return this.gl.getAttribLocation(this.id, name)
   }
 }

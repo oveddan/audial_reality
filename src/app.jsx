@@ -7,7 +7,7 @@ export default class App extends Component {
   render () {
     return (
       <Scene>
-        <Cube />
+        <Cube key='5' />
       </Scene>
     )
   }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ShaderProgram from '../gl/ShaderProgram'
+import VertexBufferObject from '../gl/VertexBufferObject'
 
 import vertex from '../shaders/vertex.glsl'
 import fragment from '../shaders/fragment.glsl'
@@ -15,21 +16,21 @@ export default class Cube extends Component {
   componentWillMount() {
     const gl = this.context.gl
 
-    this.squareVerticesBuffer = gl.createBuffer()
 
     this.shaderProgram = new ShaderProgram(gl, vertex, fragment)
+    this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')
+    gl.enableVertexAttribArray(this.vertexPositionAttribute)
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVerticesBuffer)
-  
-    const vertices = [
-      1.0,  1.0,  0.0,
-      -1.0, 1.0,  0.0,
-      1.0,  -1.0, 0.0,
-      -1.0, -1.0, 0.0
+    const verteces = [
+      0.5,  0.5,  0.0,
+      -0.5, 0.5,  0.0,
+      0.5,  -0.5, 0.0,
+      -0.5, -0.5, 0.0
     ]
-  
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
 
+    this.vertexBuffer = new VertexBufferObject(gl)
+    this.vertexBuffer.update(verteces)
+  
     this.context.registerChildDraw(this.draw)
   }
 
@@ -38,7 +39,13 @@ export default class Cube extends Component {
   }
 
   draw(gl) {
-    console.log('drawing')
+    this.shaderProgram.bind()
+    this.vertexBuffer.bind()
+
+    gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
+    //setMatrixUniforms()
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
   }
 
   render() { return null }
