@@ -59,7 +59,8 @@ export default class Cube extends Component {
     const gl = this.context.gl
 
     this.transformation = mat4.create()
-    mat4.fromScaling(this.transformation, vec3.fromValues(0.5, 0.5, 0.5))
+    mat4.fromScaling(this.transformation, vec3.fromValues(1.25, 0.01, 10.0))
+    mat4.translate(this.transformation, this.transformation, vec3.fromValues(0, -100, 0))
 
     this.shaderProgram = new ShaderProgram(gl, vertex, fragment)
     this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')
@@ -72,7 +73,6 @@ export default class Cube extends Component {
     this.elementArrayBuffer.update(vertexIndices)
   
     this.draw = this.draw.bind(this)
-    console.log('mounted')
     this.context.registerChildDraw(this.draw)
   }
 
