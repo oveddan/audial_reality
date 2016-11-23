@@ -3,13 +3,15 @@ import Scene from './components/scene'
 import Cube from './components/cube'
 import { vec3, mat4 } from 'gl-matrix'
 
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+const analyser = audioCtx.createAnalyser()
+const source = audioCtx.createMediaStreamSource(stream)
+source.connect(analyser)
+analyser.connect(distortion)
+// etc.
+
 const width = 640
 const height = 480
-// const aspect = width / height
-
-// const getOptimalViewDistance = (screenWidth, fieldOfView) => (
-  // -screenWidth/(2*Math.tan(fieldOfView/2))
-// )
 
 const toRadian = degrees => degrees * Math.PI / 180
 
