@@ -21,59 +21,50 @@ var config = {
       {
         test : /\.jsx?$/,
         exclude : /node_modules/,
-        loader : 'babel'
+        loader : 'babel',
+        include: [
+          PATHS.SOURCE
+        ]
       },
       {
-        test : /\.css$/,
+        test: /\.(png|jpg|eot|woff|otf|ttf|svg)$/,
         exclude : /node_modules/,
-        loader : ExtractTextPlugin.extract('style',
-          'css?modules&camelCase&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss')
+        loader: 'file-loader'
       },
       {
-        test : /sinon\.js$/,
-        loader : 'imports?define=>false,require=>false'
+        test: /\.glsl$/,
+        loader: 'raw'
       }
     ]
   },
-  resolve : {
-    extensions : ['', '.js'],
-    alias : {
-      sinon : 'sinon/pkg/sinon',
-      src : PATHS.SOURCE
-    }
-  },
   plugins : [
-    new ExtractTextPlugin('style.css', { allChunks : true }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV' : JSON.stringify(process.env.NODE_ENV)
     })
-  ],
-  postcss : [
-    require('postcss-normalize'),
-    require('autoprefixer')
   ]
 }
 
 var buildConfig = assign({}, config, {
-  entry : [PATHS.SOURCE + '/index.js']
+  entry : [PATHS.SOURCE + '/index.js'],
+  resolve: {
+    root: path.resolve(__dirname, 'node_modules'),
+    extensions: ['', '.js', '.jsx']
+  }
 })
 
 var devConfig = assign({}, buildConfig, {
+  devtool: 'source-map',
   entry : [
     'webpack-hot-middleware/client'
   ].concat(buildConfig.entry),
+  resolve: buildConfig.resolve,
   plugins : [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
   ].concat(buildConfig.plugins)
 })
 
-var testConfig = assign({}, buildConfig, {
-  devtool: 'inline-source-map'
-})
-
 module.exports = buildConfig
 module.exports.devConfig = devConfig
-module.exports.testConfig = testConfig
 
 /* eslint-enable no-var,object-shorthand,prefer-template */
