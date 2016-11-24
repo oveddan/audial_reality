@@ -3,7 +3,7 @@ import ShaderProgram from '../gl/ShaderProgram'
 import VertexBufferObject from '../gl/VertexBufferObject'
 import ElementArrayBuffer from '../gl/ElementArrayBuffer'
 import vertex from '../shaders/vertex.glsl'
-import fragment from '../shaders/fragment.glsl'
+import fragment from '../shaders/dotted_lines.glsl'
 
 import { vec3, mat4 } from 'gl-matrix'
 

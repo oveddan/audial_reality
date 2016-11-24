@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import Scene from './components/scene'
 import Cube from './components/cube'
+import AudioAnalyzer from './components/AudioAnalyzer'
 import { vec3, mat4 } from 'gl-matrix'
 
-// const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
-// const analyser = audioCtx.createAnalyser()
 // const source = audioCtx.createMediaStreamSource(stream)
 // source.connect(analyser)
 // analyser.connect(distortion)
@@ -38,7 +37,8 @@ export default class App extends Component {
   render () {
     return (
       <Scene width={width} height={height} >
-        <Cube key='3' camera={this.camera()} />
+        <Cube key='3' camera={this.camera()} analyzer={this.analyzer} />
+        <AudioAnalyzer fftSize={2048} />
       </Scene>
     )
   }
