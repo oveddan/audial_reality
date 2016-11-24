@@ -54,6 +54,8 @@ const vertexIndices = [
   20, 21, 22,     20, 22, 23    // left
 ]
 
+const now = new Date().getTime()
+
 export default class Cube extends Component {
   componentWillMount() {
     const gl = this.context.gl
@@ -89,6 +91,11 @@ export default class Cube extends Component {
 
     const transformUniform = this.shaderProgram.getUniform('transformation')
     gl.uniformMatrix4fv(transformUniform, false, this.transformation)
+
+    const time = Number(new Date().getTime() - now) / 1000
+
+    const timeUniform = this.shaderProgram.getUniform('u_time')
+    gl.uniform1f(timeUniform, time)
 
     gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
 

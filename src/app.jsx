@@ -3,15 +3,15 @@ import Scene from './components/scene'
 import Cube from './components/cube'
 import { vec3, mat4 } from 'gl-matrix'
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
-const analyser = audioCtx.createAnalyser()
-const source = audioCtx.createMediaStreamSource(stream)
-source.connect(analyser)
-analyser.connect(distortion)
-// etc.
+// const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+// const analyser = audioCtx.createAnalyser()
+// const source = audioCtx.createMediaStreamSource(stream)
+// source.connect(analyser)
+// analyser.connect(distortion)
+// // etc.
 
-const width = 640
-const height = 480
+const width = 1080
+const height = 800
 
 const toRadian = degrees => degrees * Math.PI / 180
 
