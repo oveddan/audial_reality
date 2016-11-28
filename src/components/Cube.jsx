@@ -101,6 +101,10 @@ export default class Cube extends Component {
 
     this.elementArrayBuffer.bind()
 
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getTexture())
+    gl.uniform1i(this.shaderProgram.getUniform('uSampler'), 0)
+
     gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0)
   }
 

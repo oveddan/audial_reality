@@ -34,11 +34,20 @@ export default class App extends Component {
     return out
   }
 
+  setAnalyzer(analyzer) {
+    if (!this.analyzer) {
+      this.analyzer = analyzer
+      this.forceUpdate()
+    }
+  }
+
   render () {
     return (
       <Scene width={width} height={height} >
-        <Cube key='3' camera={this.camera()} analyzer={this.analyzer} />
-        <AudioAnalyzer fftSize={2048} />
+        {this.analyzer && (
+          <Cube key='3' camera={this.camera()} analyzer={this.analyzer} />
+        )}
+        <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
       </Scene>
     )
   }
