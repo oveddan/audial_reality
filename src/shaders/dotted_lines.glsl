@@ -23,7 +23,7 @@ float pattern(vec2 st, vec2 v, float t) {
 }
 
 void main() {
-    vec2 st = vec2(position.x, position.z);
+    vec2 st = vec2(position.z, position.x);
 
     vec2 grid = vec2(100.0,50.);
     st *= grid;
