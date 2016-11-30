@@ -7,7 +7,8 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var PATHS = {
   OUTPUT : path.join(__dirname, 'dist'),
-  SOURCE : path.join(__dirname, 'src')
+  SOURCE : path.join(__dirname, 'src'),
+  OBJECTS : path.join(__dirname, 'objects')
 }
 
 var config = {
@@ -27,12 +28,12 @@ var config = {
         ]
       },
       {
-        test: /\.(png|jpg|eot|woff|otf|ttf|svg)$/,
+        test: /\.(png|jpg)$/,
         exclude : /node_modules/,
         loader: 'file-loader'
       },
       {
-        test: /\.glsl$/,
+        test: /\.(glsl|obj)$/,
         loader: 'raw'
       }
     ]
@@ -48,7 +49,10 @@ var buildConfig = assign({}, config, {
   entry : [PATHS.SOURCE + '/index.js'],
   resolve: {
     root: path.resolve(__dirname, 'node_modules'),
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx'],
+    alias: {
+      objects: PATHS.OBJECTS
+    }
   }
 })
 

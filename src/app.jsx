@@ -22,17 +22,15 @@ export default class App extends Component {
 
     // const viewDistance = getOptimalViewDistance(width, 100)
     // const viewNear = -viewDistance
-    this.perspective = mat4.create()
-    mat4.perspective(this.perspective, toRadian(45), width / height, 1, 1000 )
+    const perspective = mat4.create()
+    mat4.perspective(perspective, toRadian(45), width / height, 1, 1000 )
 
-    this.position = mat4.create()
-    mat4.fromTranslation(this.position, vec3.fromValues(0, 0, -5))
-  }
+    const position = mat4.create()
+    mat4.fromTranslation(position, vec3.fromValues(0, 0, -5))
 
-  camera() {
-    const out = mat4.create()
-    mat4.multiply(out, this.perspective, this.position)
-    return out
+    this.camera = mat4.create()
+ 
+    mat4.multiply(this.camera, perspective, position)
   }
 
   setAnalyzer(analyzer) {
@@ -46,10 +44,10 @@ export default class App extends Component {
     return (
       <Scene width={width} height={height} >
         {this.analyzer && (
-          <Cube key='3' camera={this.camera()} analyzer={this.analyzer} />
+          <Cube key='3' camera={this.camera} analyzer={this.analyzer} />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
-        <MeshFromFile path='tire' />
+        <MeshFromFile camera={this.camera} path='abbey' />
       </Scene>
     )
   }
