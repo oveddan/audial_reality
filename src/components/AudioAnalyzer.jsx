@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { fill, min, max } from 'lodash'
 
 const getAnalyzer = fftSize => {
   navigator.getUserMedia = (navigator.getUserMedia ||
@@ -32,6 +33,8 @@ const getAnalyzer = fftSize => {
   return analyzer
 }
 
+const TIME_LENGTH = 10*60
+
 export default class AudioAnalyzer extends Component {
   componentWillMount() {
 
@@ -50,6 +53,9 @@ export default class AudioAnalyzer extends Component {
 
     this.draw = this.draw.bind(this)
     this.context.registerChildDraw(this.draw)
+
+    this.signalOverTime = new Array(TIME_LENGTH)
+    fill(this.signalOverTime, 0)
   }
 
   componentWillUnmount() {
@@ -62,19 +68,24 @@ export default class AudioAnalyzer extends Component {
     const dataArray = new Uint8Array(bufferLength)
     analyzer.getByteTimeDomainData(dataArray)
 
-    const texCoords = new Uint8Array(bufferLength * 4)
+    this.signalOverTime.push(max(dataArray)-min(dataArray))
 
-    for(let i = 0; i < bufferLength * 4; i++) {
-      const start = i*4
+    this.signalOverTime.shift()
 
-      texCoords[start] = dataArray[i]
+    const texCoords = new Uint8Array(TIME_LENGTH * 3)
+
+    for(let i = 0; i < TIME_LENGTH; i++) {
+      const start = i * 3
+
+      texCoords[start] = this.signalOverTime[TIME_LENGTH - i]
       // texCoords[start + 1] = 0
       // texCoords[start + 2] = 0
-      texCoords[start + 3] = 255
     } 
 
+    //    console.log(texCoords)
+
     gl.bindTexture(gl.TEXTURE_2D, this.texture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, bufferLength, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, texCoords)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, TIME_LENGTH, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, texCoords)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)

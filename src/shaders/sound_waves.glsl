@@ -21,9 +21,11 @@ void main() {
 
   float dist = distance(vec2(0.0, 0.0), vec2(position.x, position.z));
 
-  float distNormalized = smoothstep(0.0, 5.0, dist);
+  float distNormalized = smoothstep(0.0, 10.0, dist);
 
   vec4 firstData = texture2D(uSampler, vec2(distNormalized, 0.5));
 
-  gl_FragColor = vec4(full * firstData[0], 1.0);
+  float res = smoothstep(0.0, 0.1, firstData[0]);
+
+  gl_FragColor = vec4(full * res, 1.0);
 }
