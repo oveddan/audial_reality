@@ -19,7 +19,7 @@ float getFadeOut(float x) {
 void main() {
   vec3 full = vec3(255.0, 51.0, 204.0) / 255.0;
 
-  float dist = distance(vec2(0.0, 0.0), vec2(position.x, position.z));
+  float dist = distance(vec2(0.0, 0.25), vec2(position.x, position.z));
 
   float distNormalized = smoothstep(0.0, 10.0, dist);
 

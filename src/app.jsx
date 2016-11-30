@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Scene from './components/scene'
 import Cube from './components/cube'
+import MeshFromFile from './components/MeshFromFile'
 import AudioAnalyzer from './components/AudioAnalyzer'
 import { vec3, mat4 } from 'gl-matrix'
 
@@ -48,6 +49,7 @@ export default class App extends Component {
           <Cube key='3' camera={this.camera()} analyzer={this.analyzer} />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
+        <MeshFromFile path='tire' />
       </Scene>
     )
   }
