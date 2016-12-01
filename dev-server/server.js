@@ -17,7 +17,10 @@ app.use(devMiddleware(compiler, {
 
 app.use(hotMiddleware(compiler))
 
+app.use('/static', express.static('static'))
+
 app.get('*', (_r, res) => res.sendFile(path.resolve(__dirname, '../src/index.html')))
+
 
 app.listen(3000, 'localhost', err => {
   if (err)
@@ -25,6 +28,7 @@ app.listen(3000, 'localhost', err => {
 
   console.log('App started at localhost:3000')
 })
+
 
 /* eslint-enable no-console */
 

@@ -29,10 +29,7 @@ const regexp = {
   material_use_pattern     : /^usemtl /
 }
 
-export const loadObjectGeometry = name => {
-  const objectFile = require(`objects/${name}/${name}.obj`)
-
-
+export const loadObjectGeometry = objectFile => {
   const objectGeometry = new ObjectGeometry()
 
   let text = objectFile

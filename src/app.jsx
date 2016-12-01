@@ -47,7 +47,10 @@ export default class App extends Component {
           <Cube key='3' camera={this.camera} analyzer={this.analyzer} />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
-        <MeshFromFile camera={this.camera} path='abbey' />
+        <MeshFromFile 
+          camera={this.camera} 
+          objectPath='/static/objects/tire/tire.obj'
+        />
       </Scene>
     )
   }
