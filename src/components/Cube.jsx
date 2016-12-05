@@ -60,9 +60,11 @@ export default class Cube extends Component {
   componentWillMount() {
     const gl = this.context.gl
 
+    let [x, y, z] = this.props.position
+
     this.transformation = mat4.create()
-    mat4.fromScaling(this.transformation, vec3.fromValues(1.25, 0.01, 10.0))
-    mat4.translate(this.transformation, this.transformation, vec3.fromValues(0, -100, 0))
+    mat4.fromScaling(this.transformation, vec3.fromValues(...this.props.scale))
+    mat4.translate(this.transformation, this.transformation, vec3.fromValues(...this.props.position))
 
     this.shaderProgram = new ShaderProgram(gl, vertex, fragment)
     this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')

@@ -45,16 +45,12 @@ export default class App extends Component {
     return (
       <Scene width={width} height={height} >
         {this.analyzer && (
-          <Cube key='3' camera={this.camera} analyzer={this.analyzer} />
+          <Cube key='1' camera={this.camera} analyzer={this.analyzer} position={[0, -100, 0]} scale={[1.25, 0.01, 10.0]} />
+        )}
+        {this.analyzer && (
+          <Cube key='2' camera={this.camera} analyzer={this.analyzer} position={[0, 0, -10]} scale={[100.0, 100.0, 0.1]} />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
-        <MeshFromFile 
-          camera={this.camera} 
-          position={[1, 0, 7]}
-          scale={1.0}
-          objectPath='/static/objects/abbey/abbey.obj'
-          texturePath='/static/objects/abbey/abbey.jpg'
-        />
       </Scene>
     )
   }
