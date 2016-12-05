@@ -2,21 +2,23 @@ import React, { Component } from 'react'
 import ShaderProgram from '../gl/ShaderProgram'
 import { loadObjectGeometry } from '../lib/objectLoader'
 import ObjectGeometryBuffers from '../gl/ObjectGeometryBuffers'
+import TextureBufferObject from '../gl/TextureBufferObject'
 import vertex from '../shaders/vertex.glsl'
 import fragment from '../shaders/object.glsl'
 
 import { vec3, mat4 } from 'gl-matrix'
 
-const scale = 0.05
+
+const toRadian = degrees => degrees * Math.PI / 180
 
 export default class MeshFromText extends Component {
   componentDidMount() {
     this.transformation = mat4.create()
-    mat4.translate(this.transformation, this.transformation, vec3.fromValues(0, 0, 0))
-    mat4.scale(this.transformation, this.transformation, vec3.fromValues(scale, scale, scale))
+    const [x, y, z]= this.props.position
+    const { scale } = this.props
 
-    this.draw = this.draw.bind(this)
-    this.context.registerChildDraw(this.draw)
+    mat4.translate(this.transformation, this.transformation, vec3.fromValues(x, y, z))
+    mat4.scale(this.transformation, this.transformation, vec3.fromValues(scale, scale, scale))
 
     const gl = this.context.gl
     const objectGeometry = loadObjectGeometry(this.props.mesh)
@@ -29,16 +31,34 @@ export default class MeshFromText extends Component {
     this.normalAttribute = this.shaderProgram.getAttribute('aNormal')
     gl.enableVertexAttribArray(this.normalAttribute)
 
+    this.uvAttribute = this.shaderProgram.getAttribute('aUv')
+    gl.enableVertexAttribArray(this.uvAttribute)
+
     this.buffers = new ObjectGeometryBuffers(gl)
     this.buffers.update(objectGeometry)
 
-    this.setState({
-      loaded:true
-    })
+    if (this.props.texture) {
+      this.textureBuffer = new TextureBufferObject(gl)
+      this.textureBuffer.update(this.props.texture)
+    }
+
+    this.draw = this.draw.bind(this)
+    this.context.registerChildDraw(this.draw)
   }
 
   componentWillUnmount() {
     this.context.unregisterChildDraw(this.draw)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const [x, y, z]= nextProps.position
+
+    if(nextProps.position !== this.props.position)
+      mat4.translate(this.transformation, this.transformation, vec3.fromValues(x, y, z))
+
+    const { scale } = this.props
+    if(nextProps.scale !== this.props.scale)
+      mat4.scale(this.transformation, this.transformation, vec3.fromValues(scale, scale, scale))
   }
 
   draw(gl) {
@@ -55,6 +75,15 @@ export default class MeshFromText extends Component {
 
     this.buffers.normalBuffer.bind()
     gl.vertexAttribPointer(this.normalAttribute, 3, gl.FLOAT, false, 0, 0)
+
+    this.buffers.uvBuffer.bind()
+    gl.vertexAttribPointer(this.uvAttribute, 2, gl.FLOAT, false, 0, 0)
+
+    if (this.textureBuffer) {
+      gl.activeTexture(gl.TEXTURE0)
+      this.textureBuffer.bind()
+      gl.uniform1i(this.shaderProgram.getUniform('uTexture'), this.textureBuffer.id)
+    }
 
     gl.drawArrays(gl.TRIANGLES, 0, this.buffers.numVerteces)
   }

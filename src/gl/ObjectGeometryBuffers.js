@@ -16,6 +16,7 @@ export default class ObjectGeometryBuffers {
     console.log('length: ', objectGeometry.vertexBuffer.length)
     console.log(objectGeometry.vertexBuffer)
     console.log('num verteces:', objectGeometry.numVerteces)
+    console.log('uv buffer size: ', objectGeometry.uvBuffer.length)
     this.vertexBuffer.bind()
     this.vertexBuffer.update(new Float32Array(objectGeometry.vertexBuffer))
     this.numVerteces = objectGeometry.numVerteces

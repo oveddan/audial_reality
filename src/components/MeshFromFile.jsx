@@ -16,12 +16,41 @@ export default class MeshFromFile extends Component {
           mesh: meshResponse.text
         })
       })
+
+    if (this.props.texturePath) {
+      const textureImage = new Image()
+      textureImage.onload = () => {
+        self.setState({
+          texture: textureImage
+        })
+      }
+
+      textureImage.src = this.props.texturePath
+    }
+    
+  }
+
+  loaded() {
+    if (!this.state.mesh)
+      return false
+
+    if (this.props.texturePath && !this.state.texture)
+      return false
+
+    return true
   }
 
   render() { 
-    if (!this.state.mesh)
+    if (!this.loaded())
       return null
 
-    return <MeshFromText {...this.props} mesh={this.state.mesh}  />
+    console.log('rendering')
+
+    return (
+      <MeshFromText 
+        {...this.props} 
+        mesh={this.state.mesh} texture={this.state.texture}  
+      />
+    )
   }
 }

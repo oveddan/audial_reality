@@ -23,6 +23,7 @@ export default class App extends Component {
     // const viewDistance = getOptimalViewDistance(width, 100)
     // const viewNear = -viewDistance
     const perspective = mat4.create()
+    // mat4.ortho(this.ortho, -10, 10, -10, 10, 5, -5)
     mat4.perspective(perspective, toRadian(45), width / height, 1, 1000 )
 
     const position = mat4.create()
@@ -49,7 +50,10 @@ export default class App extends Component {
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
         <MeshFromFile 
           camera={this.camera} 
-          objectPath='/static/objects/tire/tire.obj'
+          position={[1, 0, 7]}
+          scale={1.0}
+          objectPath='/static/objects/abbey/abbey.obj'
+          texturePath='/static/objects/abbey/abbey.jpg'
         />
       </Scene>
     )
