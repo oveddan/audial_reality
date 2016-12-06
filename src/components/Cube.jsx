@@ -5,7 +5,7 @@ import ElementArrayBuffer from '../gl/ElementArrayBuffer'
 import vertex from '../shaders/vertex.glsl'
 import fragment from '../shaders/sound_waves.glsl'
 
-import { vec3, mat4 } from 'gl-matrix'
+import { translation, scale, multiply, printMatrix, transpose } from 'lib/matrices'
 
 const verteces = [
   // Front face
@@ -60,11 +60,20 @@ export default class Cube extends Component {
   componentWillMount() {
     const gl = this.context.gl
 
-    let [x, y, z] = this.props.position
+    const scaling = scale(this.props.scale)
 
-    this.transformation = mat4.create()
-    mat4.fromScaling(this.transformation, vec3.fromValues(...this.props.scale))
-    mat4.translate(this.transformation, this.transformation, vec3.fromValues(...this.props.position))
+    const translate = translation(this.props.position)
+
+    this.transformation = multiply(translate, scaling)
+
+    console.log('translate:')
+    printMatrix(translate)
+
+    console.log('transformation:')
+    printMatrix(this.transformation)
+
+    console.log('camera:')
+    printMatrix(this.props.camera)
 
     this.shaderProgram = new ShaderProgram(gl, vertex, fragment)
     this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')
@@ -81,32 +90,34 @@ export default class Cube extends Component {
   }
 
   componentWillUnmount() {
+    this.vertexBuffer.free()
+    this.elementArrayBuffer.free()
+    this.shaderProgram.free()
     this.context.unregisterChildDraw(this.draw)
   }
 
   draw(gl) {
     this.shaderProgram.bind()
-    this.vertexBuffer.bind()
 
     const cameraUniform = this.shaderProgram.getUniform('camera')
-    gl.uniformMatrix4fv(cameraUniform, false, this.props.camera)
+    gl.uniformMatrix4fv(cameraUniform, false, transpose(this.props.camera))
 
     const transformUniform = this.shaderProgram.getUniform('transformation')
-    gl.uniformMatrix4fv(transformUniform, false, this.transformation)
+    gl.uniformMatrix4fv(transformUniform, false, transpose(this.transformation))
 
     const time = Number(new Date().getTime() - now) / 1000
 
     const timeUniform = this.shaderProgram.getUniform('u_time')
     gl.uniform1f(timeUniform, time)
 
+    this.vertexBuffer.bind()
     gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
-
-    this.elementArrayBuffer.bind()
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getTexture())
     gl.uniform1i(this.shaderProgram.getUniform('uSampler'), 0)
 
+    this.elementArrayBuffer.bind()
     gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0)
   }
 

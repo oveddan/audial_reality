@@ -19,9 +19,12 @@ export default class ShaderProgram {
   constructor(gl, vertex, fragment) {
     this.gl = gl
     // Create the shader program
+
+    this.vertexShader = getShader(gl, vertex, gl.VERTEX_SHADER)
+    this.fragmentShader = getShader(gl, fragment, gl.FRAGMENT_SHADER)
     const id = this.id = gl.createProgram()
-    gl.attachShader(id, getShader(gl, vertex, gl.VERTEX_SHADER))
-    gl.attachShader(id, getShader(gl, fragment, gl.FRAGMENT_SHADER))
+    gl.attachShader(id, this.vertexShader)
+    gl.attachShader(id, this.fragmentShader)
     gl.linkProgram(id)
 
     // If creating the shader program failed, alert
@@ -35,6 +38,13 @@ export default class ShaderProgram {
 
   bind() {
     this.gl.useProgram(this.id)
+  }
+
+  free() {
+    this.gl.detachShader(this.id, this.vertexShader)
+    this.gl.detachShader(this.id, this.fragmentShader)
+    this.gl.deleteShader(this.vertexShader)
+    this.gl.deleteShader(this.fragmentShader)
   }
 
   getAttribute(name) {

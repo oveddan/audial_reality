@@ -9,6 +9,10 @@ export default class VertexBufferObject {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.id)
   }
 
+  free() {
+    this.gl.deleteBuffer(this.id)
+  }
+
   update(data) {
     const gl = this.gl
     this.bind()

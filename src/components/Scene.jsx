@@ -74,6 +74,9 @@ export default class Scene extends Component {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
   
+    gl.enable(gl.DEPTH_TEST)
+    gl.depthFunc(gl.LESS)
+
     each(this.childDraws, draw => draw(this.gl))
 
     const error = gl.getError()

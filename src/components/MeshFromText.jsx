@@ -6,20 +6,14 @@ import TextureBufferObject from '../gl/TextureBufferObject'
 import vertex from '../shaders/vertex.glsl'
 import fragment from '../shaders/object.glsl'
 
-import { vec3, mat4 } from 'gl-matrix'
-
-
-const toRadian = degrees => degrees * Math.PI / 180
+import { translation, scale, multiply, printMatrix, transpose } from 'lib/matrices'
 
 export default class MeshFromText extends Component {
   componentDidMount() {
-    this.transformation = mat4.create()
-    const [x, y, z]= this.props.position
-    const { scale } = this.props
-
-    mat4.translate(this.transformation, this.transformation, vec3.fromValues(x, y, z))
-    mat4.scale(this.transformation, this.transformation, vec3.fromValues(scale, scale, scale))
-
+    const scaling = scale(this.props.scale)
+    const translate = translation(this.props.position)
+    this.transformation = multiply(translate, scaling)
+    
     const gl = this.context.gl
     const objectGeometry = loadObjectGeometry(this.props.mesh)
 
@@ -47,28 +41,31 @@ export default class MeshFromText extends Component {
   }
 
   componentWillUnmount() {
+    this.buffers.free()
+    this.shaderProgram.free()
+    this.textureBuffer.free()
     this.context.unregisterChildDraw(this.draw)
   }
 
-  componentWillReceiveProps(nextProps) {
-    const [x, y, z]= nextProps.position
+  // componentWillReceiveProps(nextProps) {
+    // const [x, y, z]= nextProps.position
 
-    if(nextProps.position !== this.props.position)
-      mat4.translate(this.transformation, this.transformation, vec3.fromValues(x, y, z))
+    // if(nextProps.position !== this.props.position)
+      // mat4.translate(this.transformation, this.transformation, vec3.fromValues(x, y, z))
 
-    const { scale } = this.props
-    if(nextProps.scale !== this.props.scale)
-      mat4.scale(this.transformation, this.transformation, vec3.fromValues(scale, scale, scale))
-  }
+    // const { scale } = this.props
+    // if(nextProps.scale !== this.props.scale)
+      // mat4.scale(this.transformation, this.transformation, vec3.fromValues(scale, scale, scale))
+  // }
 
   draw(gl) {
     this.shaderProgram.bind()
 
     const cameraUniform = this.shaderProgram.getUniform('camera')
-    gl.uniformMatrix4fv(cameraUniform, false, this.props.camera)
+    gl.uniformMatrix4fv(cameraUniform, false, transpose(this.props.camera))
 
     const transformUniform = this.shaderProgram.getUniform('transformation')
-    gl.uniformMatrix4fv(transformUniform, false, this.transformation)
+    gl.uniformMatrix4fv(transformUniform, false, transpose(this.transformation))
 
     this.buffers.vertexBuffer.bind()
     gl.vertexAttribPointer(this.positionAttribute, 3, gl.FLOAT, false, 0, 0)

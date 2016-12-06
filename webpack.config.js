@@ -3,12 +3,12 @@
 var path = require('path')
 var assign = require('lodash.assign')
 var webpack = require('webpack')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var PATHS = {
   OUTPUT : path.join(__dirname, 'dist'),
   SOURCE : path.join(__dirname, 'src'),
-  OBJECTS : path.join(__dirname, 'objects')
+  OBJECTS : path.join(__dirname, 'objects'),
+  LIB: path.join(__dirname, 'src', 'lib')
 }
 
 var config = {
@@ -51,7 +51,8 @@ var buildConfig = assign({}, config, {
     root: path.resolve(__dirname, 'node_modules'),
     extensions: ['', '.js', '.jsx'],
     alias: {
-      objects: PATHS.OBJECTS
+      objects: PATHS.OBJECTS,
+      lib: PATHS.LIB
     }
   }
 })

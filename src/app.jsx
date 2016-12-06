@@ -3,7 +3,8 @@ import Scene from './components/scene'
 import Cube from './components/cube'
 import MeshFromFile from './components/MeshFromFile'
 import AudioAnalyzer from './components/AudioAnalyzer'
-import { vec3, mat4 } from 'gl-matrix'
+
+import { perspectiveProjection, translation, multiply, printMatrix, transpose } from 'lib/matrices'
 
 // const source = audioCtx.createMediaStreamSource(stream)
 // source.connect(analyser)
@@ -13,8 +14,6 @@ import { vec3, mat4 } from 'gl-matrix'
 const width = 1080
 const height = 800
 
-const toRadian = degrees => degrees * Math.PI / 180
-
 export default class App extends Component {
   componentWillMount() {
     // this.ortho = mat4.create()
@@ -22,16 +21,15 @@ export default class App extends Component {
 
     // const viewDistance = getOptimalViewDistance(width, 100)
     // const viewNear = -viewDistance
-    const perspective = mat4.create()
-    // mat4.ortho(this.ortho, -10, 10, -10, 10, 5, -5)
-    mat4.perspective(perspective, toRadian(45), width / height, 1, 1000 )
+    const perspective = perspectiveProjection(width, height)
 
-    const position = mat4.create()
-    mat4.fromTranslation(position, vec3.fromValues(0, 0, -5))
+    printMatrix(perspective)
 
-    this.camera = mat4.create()
- 
-    mat4.multiply(this.camera, perspective, position)
+    const position = translation([0, 0, -5])
+
+
+
+    this.camera = multiply(perspective, position)
   }
 
   setAnalyzer(analyzer) {
