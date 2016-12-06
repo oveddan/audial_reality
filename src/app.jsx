@@ -4,6 +4,8 @@ import Cube from './components/cube'
 import MeshFromFile from './components/MeshFromFile'
 import AudioAnalyzer from './components/AudioAnalyzer'
 
+import shaders from 'shaders'
+
 import { perspectiveProjection, translation, multiply, printMatrix, transpose } from 'lib/matrices'
 
 // const source = audioCtx.createMediaStreamSource(stream)
@@ -41,10 +43,22 @@ export default class App extends Component {
     return (
       <Scene width={width} height={height} >
         {this.analyzer && (
-          <Cube key='1' camera={this.camera} analyzer={this.analyzer} position={[0, -1, 0]} scale={[1.25, 0.1, 100.0]} />
+          <Cube key='1' 
+            camera={this.camera} 
+            analyzer={this.analyzer} 
+            position={[0, -1, 0]} 
+            scale={[1.25, 0.1, 100.0]} 
+            fragmentShader={shaders.soundWaves} 
+          />
         )}
         {this.analyzer && (
-          <Cube key='2' camera={this.camera} analyzer={this.analyzer} position={[0, 0, -10]} scale={[1.0, 1.0, 1.0]} />
+          <Cube key='2' 
+            camera={this.camera} 
+            analyzer={this.analyzer} 
+            position={[0, 0, -10]} 
+            scale={[1.0, 1.0, 1.0]} 
+            fragmentShader={shaders.soundWaves}
+          />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
       </Scene>

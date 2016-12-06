@@ -8,7 +8,7 @@ var PATHS = {
   OUTPUT : path.join(__dirname, 'dist'),
   SOURCE : path.join(__dirname, 'src'),
   OBJECTS : path.join(__dirname, 'objects'),
-  LIB: path.join(__dirname, 'src', 'lib')
+  LIB: path.join(__dirname, 'src', 'lib'),
 }
 
 var config = {
@@ -52,7 +52,8 @@ var buildConfig = assign({}, config, {
     extensions: ['', '.js', '.jsx'],
     alias: {
       objects: PATHS.OBJECTS,
-      lib: PATHS.LIB
+      lib: PATHS.LIB,
+      shaders: path.join(__dirname, 'src', 'shaders')
     }
   }
 })

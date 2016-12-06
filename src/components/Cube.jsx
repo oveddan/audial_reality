@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import ShaderProgram from '../gl/ShaderProgram'
 import VertexBufferObject from '../gl/VertexBufferObject'
 import ElementArrayBuffer from '../gl/ElementArrayBuffer'
-import vertex from '../shaders/vertex.glsl'
-import fragment from '../shaders/sound_waves.glsl'
+import shaders from 'shaders'
 
 import { translation, scale, multiply, printMatrix, transpose } from 'lib/matrices'
 
@@ -75,7 +74,7 @@ export default class Cube extends Component {
     console.log('camera:')
     printMatrix(this.props.camera)
 
-    this.shaderProgram = new ShaderProgram(gl, vertex, fragment)
+    this.shaderProgram = new ShaderProgram(gl, shaders.vertex, this.props.fragmentShader)
     this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')
     gl.enableVertexAttribArray(this.vertexPositionAttribute)
 
