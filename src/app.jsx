@@ -25,9 +25,7 @@ export default class App extends Component {
 
     printMatrix(perspective)
 
-    const position = translation([0, 0, -5])
-
-
+    const position = translation([0, 0, -1])
 
     this.camera = multiply(perspective, position)
   }
@@ -43,10 +41,10 @@ export default class App extends Component {
     return (
       <Scene width={width} height={height} >
         {this.analyzer && (
-          <Cube key='1' camera={this.camera} analyzer={this.analyzer} position={[0, -100, 0]} scale={[1.25, 0.01, 10.0]} />
+          <Cube key='1' camera={this.camera} analyzer={this.analyzer} position={[0, -1, 0]} scale={[1.25, 0.1, 100.0]} />
         )}
         {this.analyzer && (
-          <Cube key='2' camera={this.camera} analyzer={this.analyzer} position={[0, 0, -10]} scale={[100.0, 100.0, 0.1]} />
+          <Cube key='2' camera={this.camera} analyzer={this.analyzer} position={[0, 0, -10]} scale={[1.0, 1.0, 1.0]} />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
       </Scene>

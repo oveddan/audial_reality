@@ -11,20 +11,23 @@ const perspectiveMatrix = (w, h, n, f) => {
   const l = -r
   const b = -t
 
-  return transpose(new Float32Array([
-    2*n/(r-l),  0,  (r+l)/(r-l),  0,
-    0, 2*n/(t-b), (t+b)/(t-b), 0,
-    0, 0, -(f+n)/(f-n), -(2*f*n)/(f-n),
+  const an = Math.abs(n)
+  const af = Math.abs(f)
+
+  return new Float32Array([
+    2*an/(r-l),  0,  (r+l)/(r-l),  0,
+    0, 2*an/(t-b), (t+b)/(t-b), 0,
+    0, 0, (af+an)/(af-an), (2*af*an)/(af-an),
     0, 0, -1, 0
-  ]))
+  ])
 }
 
 const orthoMatrix = (r,  l,  t,  b,  n,  f) => {
   return new Float32Array([
-    2 / (r - l),  0,  0, 0,
-    0, 2 / (t-b), 0, 0,
-    0, 0, -2 / (f-n), 0,
-    -(r+l)/(r-l), -(t+b)/(t-b), -(f+n)/(f-n), 1
+    2 / (r - l),  0, 0, -(r+l)/(r-l),
+    0, 2 / (t-b), 0, -(t+b)/(t-b),
+    0, 0, -2 / (f-n), -(f+n)/(n-f),
+    0, 0, 0, 1
   ])
 }
 
@@ -72,8 +75,8 @@ export const multiply = (a, b) => {
 }
 
 export const perspectiveProjection = (windowWidth, windowHeight) => {
-//  const perspective = perspectiveMatrix(windowWidth, windowHeight, DEFAULT_NEAR, DEFAULT_FAR)
-  const perspective = getOrtho(windowWidth, windowHeight)
+  const perspective = perspectiveMatrix(windowWidth, windowHeight, DEFAULT_NEAR, DEFAULT_FAR)
+//  const perspective = getOrtho(windowWidth, windowHeight)
 
   return perspective
 }
