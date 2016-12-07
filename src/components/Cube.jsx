@@ -53,6 +53,8 @@ const vertexIndices = [
   20, 21, 22,     20, 22, 23    // left
 ]
 
+const center = new Float32Array([0, 0, 0])
+
 const now = new Date().getTime()
 
 export default class Cube extends Component {
@@ -98,11 +100,15 @@ export default class Cube extends Component {
   draw(gl) {
     this.shaderProgram.bind()
 
-    const cameraUniform = this.shaderProgram.getUniform('camera')
+    const cameraUniform = this.shaderProgram.getUniform('uCamera')
     gl.uniformMatrix4fv(cameraUniform, false, transpose(this.props.camera))
 
-    const transformUniform = this.shaderProgram.getUniform('transformation')
+    const transformUniform = this.shaderProgram.getUniform('uTransformation')
     gl.uniformMatrix4fv(transformUniform, false, transpose(this.transformation))
+
+    const centerUniform = this.shaderProgram.getUniform('uCenter')
+    gl.uniform3fv(centerUniform, center)
+
 
     const time = Number(new Date().getTime() - now) / 1000
 

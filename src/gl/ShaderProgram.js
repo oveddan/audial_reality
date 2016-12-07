@@ -30,7 +30,7 @@ export default class ShaderProgram {
     // If creating the shader program failed, alert
 
     if (!gl.getProgramParameter(id, gl.LINK_STATUS)) {
-      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(id)}`)
+      console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(id)}`)
     }
 
     this.bind(gl)

@@ -48,24 +48,38 @@ float noise (in vec2 st) {
 
 vec3 soundOrigin = vec3(0.0, 0.25, 0.0);
 
+float getSound(vec4 soundData, int band) {
+  if (band == 0)
+      return soundData[1];
+  if (band == 1) 
+      return soundData[2];
+  if (band == 2)
+      return soundData[3];
+
+  return 0.;
+}
+
 void main() {
   vec4 current = texture2D(uSampler, vec2(0.1, 0.5));
 
-  vec3 full = vec3(255.0, 51.0, 204.0) / 255.0;
-  vec3 second = vec3(204., 102., 51.) / 255.;
+  vec4 firstData = texture2D(uSampler, vec2(1., 0.5));
 
-  float dist = distance(soundOrigin, vec3(position.x, position.y, position.z));
+  float xScaled = smoothstep(-1.0, 2.0, position.x) * 3.0; // Scale the coordinate system by 4
 
-  vec3 direction = normalize(vec3(position) - soundOrigin);
+  int band = int(floor(xScaled));
 
-  float distNormalized = smoothstep(0.0, 10.0, dist);
+  /* switch(band) { */
+    /* case 0: */
+  /* } */
+  /* if (band == 0) */
 
-  vec4 firstData = texture2D(uSampler, vec2(1. - distNormalized, 0.5));
+  //float res = smoothstep(0.0, 0.1, firstData[0]);
 
-  vec3 color = mix(full * (noise(position.xz) - noise(vec2(firstData[1], firstData[2]))), second * noise(position.xz * 10. + sin(firstData[0]) * 5.), direction);
+  float noiseR = abs(noise(position.xy * 20.));
+  float noiseB = abs(noise(position.xz * 20.));
+
+  float sound = getSound(firstData, band);
 
 
-  float res = smoothstep(0.0, 0.1, firstData[0]);
-
-  gl_FragColor = vec4(color * res, 1.0);
+  gl_FragColor = vec4(vec3(sound * noiseR, 0.0, sound * noiseB), 1.0);
 }

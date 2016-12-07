@@ -43,21 +43,12 @@ export default class App extends Component {
     return (
       <Scene width={width} height={height} >
         {this.analyzer && (
-          <Cube key='1' 
-            camera={this.camera} 
-            analyzer={this.analyzer} 
-            position={[0, -1, 0]} 
-            scale={[1.25, 0.1, 100.0]} 
-            fragmentShader={shaders.soundWaves} 
-          />
-        )}
-        {this.analyzer && (
           <Cube key='2' 
             camera={this.camera} 
             analyzer={this.analyzer} 
-            position={[0, 0, -10]} 
-            scale={[1.0, 1.0, 1.0]} 
-            fragmentShader={shaders.soundWaves}
+            position={[0, 0, 0.]} 
+            scale={[3.0, 3.0, 3.0]} 
+            fragmentShader={shaders.pulsingSphere}
           />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />
