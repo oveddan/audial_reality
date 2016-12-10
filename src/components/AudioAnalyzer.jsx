@@ -89,7 +89,8 @@ export default class AudioAnalyzer extends Component {
     this.distanceByBand = map(this.distanceByBand, (distance, i) => (
       distance + audioBands[i] / 10.0
     ))
-    
+  
+    //    console.log(this.distanceByBand)
     this.signalOverTime = drop(this.signalOverTime, 4)
     this.signalOverTime.push(...audioBands)
 

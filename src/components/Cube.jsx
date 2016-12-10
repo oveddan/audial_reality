@@ -94,6 +94,8 @@ export default class Cube extends Component {
       time: this.shaderProgram.getUniform('u_time'),
       sampler: this.shaderProgram.getUniform('uSampler')
     }
+
+    console.log('unifroms:', this.uniforms)
   
     this.draw = this.draw.bind(this)
     this.context.registerChildDraw(this.draw)
@@ -111,12 +113,11 @@ export default class Cube extends Component {
 
     const uniforms = this.uniforms
 
-    console.log(this.props.camera.matrix())
     gl.uniformMatrix4fv(uniforms.camera, false, transpose(this.props.camera.matrix()))
     gl.uniformMatrix4fv(uniforms.transform, false, transpose(this.transformation))
     gl.uniform3fv(uniforms.center, center)
 
-    const time = Number(new Date().getTime() - now) / 10000000000000.0
+    const time = Number(new Date().getTime() - now) / 1000.0
 
     gl.uniform1f(uniforms.time, time)
 

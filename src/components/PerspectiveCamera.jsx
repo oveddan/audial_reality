@@ -31,5 +31,4 @@ class PerspectiveCamera extends Component {
   render() { return null }
 }
 
-
 export default PerspectiveCamera
