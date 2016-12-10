@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 import { each, pull } from 'lodash'
 
 const initWebGL = canvas => {
@@ -12,8 +13,6 @@ const initWebGL = canvas => {
   
   return gl
 }
-
-const horizAspect = 480.0/640.0
 
 const initBuffers = gl => {
   const squareVerticesBuffer = gl.createBuffer()
@@ -73,6 +72,7 @@ export default class Scene extends Component {
     const gl = this.gl
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    gl.viewport(0, 0, this.props.width, this.props.height)
   
     gl.enable(gl.DEPTH_TEST)
     gl.depthFunc(gl.LESS)
@@ -109,3 +109,5 @@ Scene.childContextTypes = {
   registerChildDraw: React.PropTypes.func,
   unregisterChildDraw: React.PropTypes.func.isRequired
 }
+
+

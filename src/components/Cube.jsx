@@ -111,7 +111,8 @@ export default class Cube extends Component {
 
     const uniforms = this.uniforms
 
-    gl.uniformMatrix4fv(uniforms.camera, false, transpose(this.props.camera))
+    console.log(this.props.camera.matrix())
+    gl.uniformMatrix4fv(uniforms.camera, false, transpose(this.props.camera.matrix()))
     gl.uniformMatrix4fv(uniforms.transform, false, transpose(this.transformation))
     gl.uniform3fv(uniforms.center, center)
 
@@ -126,7 +127,6 @@ export default class Cube extends Component {
     gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getTexture())
     gl.uniform1i(uniforms.sampler, 0)
 
-    console.log(this.props.analyzer.getDistanceByBand())
     gl.uniform4fv(uniforms.distance, this.props.analyzer.getDistanceByBand())
 
     this.elementArrayBuffer.bind()
