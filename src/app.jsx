@@ -46,9 +46,9 @@ export default class App extends Component {
           <Cube key='2' 
             camera={this.camera} 
             analyzer={this.analyzer} 
-            position={[0, 0, 0.]} 
+            position={[0, 0, 0]} 
             scale={[3.0, 3.0, 3.0]} 
-            fragmentShader={shaders.pulsingSphere}
+            fragmentShader={shaders.soundWaves}
           />
         )}
         <AudioAnalyzer fftSize={32} ref={analyzer => { this.setAnalyzer(analyzer)}} />

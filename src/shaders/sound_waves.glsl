@@ -5,7 +5,9 @@ precision mediump float;
 varying highp vec4 position;
 
 uniform float u_time;
+// audio inputs
 uniform sampler2D uSampler;
+uniform vec4 uDistance;
 
 float getStrength(float z) {
   return sin(z) * sin(z * 4.0 - u_time * 4.0);
@@ -54,7 +56,11 @@ void main() {
   vec3 full = vec3(255.0, 51.0, 204.0) / 255.0;
   vec3 second = vec3(204., 102., 51.) / 255.;
 
-  float dist = distance(soundOrigin, vec3(position.x, position.y, position.z));
+  //vec4 distanceByBand = texture2D(uSampler, vec2(29./32., 0.));
+
+//  float n = noise(uDistance.xy);
+
+  float dist = distance(soundOrigin, position.xyz);
 
   vec3 direction = normalize(vec3(position) - soundOrigin);
 
@@ -62,7 +68,7 @@ void main() {
 
   vec4 firstData = texture2D(uSampler, vec2(1. - distNormalized, 0.5));
 
-  vec3 color = mix(full * (noise(position.xz) - noise(vec2(firstData[1], firstData[2]))), second * noise(position.xz * 10. + sin(firstData[0]) * 5.), direction);
+  vec3 color = mix(full * (noise(position.xz + sin(uDistance.xz / 10000.)) - noise(vec2(firstData[1], firstData[2]))), second * noise(position.xz * 10. + sin(uDistance.yz)) + sin(firstData[0] * 5.), direction);
 
 
   float res = smoothstep(0.0, 0.1, firstData[0]);

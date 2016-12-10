@@ -67,14 +67,14 @@ export default class Cube extends Component {
 
     this.transformation = multiply(translate, scaling)
 
-    console.log('translate:')
-    printMatrix(translate)
+    // console.log('translate:')
+    // printMatrix(translate)
 
-    console.log('transformation:')
-    printMatrix(this.transformation)
+    // console.log('transformation:')
+    // printMatrix(this.transformation)
 
-    console.log('camera:')
-    printMatrix(this.props.camera)
+    // console.log('camera:')
+    // printMatrix(this.props.camera)
 
     this.shaderProgram = new ShaderProgram(gl, shaders.vertex, this.props.fragmentShader)
     this.vertexPositionAttribute = this.shaderProgram.getAttribute('aVertexPosition')
@@ -85,6 +85,15 @@ export default class Cube extends Component {
 
     this.elementArrayBuffer = new ElementArrayBuffer(gl)
     this.elementArrayBuffer.update(vertexIndices)
+
+    this.uniforms = {
+      camera: this.shaderProgram.getUniform('uCamera'),
+      transform: this.shaderProgram.getUniform('uTransformation'),
+      center: this.shaderProgram.getUniform('uCenter'),
+      distance: this.shaderProgram.getUniform('uDistance'),
+      time: this.shaderProgram.getUniform('u_time'),
+      sampler: this.shaderProgram.getUniform('uSampler')
+    }
   
     this.draw = this.draw.bind(this)
     this.context.registerChildDraw(this.draw)
@@ -100,27 +109,25 @@ export default class Cube extends Component {
   draw(gl) {
     this.shaderProgram.bind()
 
-    const cameraUniform = this.shaderProgram.getUniform('uCamera')
-    gl.uniformMatrix4fv(cameraUniform, false, transpose(this.props.camera))
+    const uniforms = this.uniforms
 
-    const transformUniform = this.shaderProgram.getUniform('uTransformation')
-    gl.uniformMatrix4fv(transformUniform, false, transpose(this.transformation))
+    gl.uniformMatrix4fv(uniforms.camera, false, transpose(this.props.camera))
+    gl.uniformMatrix4fv(uniforms.transform, false, transpose(this.transformation))
+    gl.uniform3fv(uniforms.center, center)
 
-    const centerUniform = this.shaderProgram.getUniform('uCenter')
-    gl.uniform3fv(centerUniform, center)
+    const time = Number(new Date().getTime() - now) / 10000000000000.0
 
-
-    const time = Number(new Date().getTime() - now) / 1000
-
-    const timeUniform = this.shaderProgram.getUniform('u_time')
-    gl.uniform1f(timeUniform, time)
+    gl.uniform1f(uniforms.time, time)
 
     this.vertexBuffer.bind()
     gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
 
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getTexture())
-    gl.uniform1i(this.shaderProgram.getUniform('uSampler'), 0)
+    gl.uniform1i(uniforms.sampler, 0)
+
+    console.log(this.props.analyzer.getDistanceByBand())
+    gl.uniform4fv(uniforms.distance, this.props.analyzer.getDistanceByBand())
 
     this.elementArrayBuffer.bind()
     gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0)

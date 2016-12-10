@@ -92,8 +92,7 @@ vec3 getRayHit(vec3 _center, float radius, vec3 origin, vec3 direction) {
     // two solutions
     dist = (-B - sqrt(numberOfSolutions)) / (2. * A);
 
-  return origin + dist * direction;
-}
+  return origin + dist * direction; }
 
 vec3 soundOrigin = vec3(0.0, 0.0, -10.0);
 

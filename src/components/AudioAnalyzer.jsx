@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { fill, min, max, chunk } from 'lodash'
+import { fill, min, max, chunk, map, drop } from 'lodash'
 
 const getRange = frequencySignal => (
   max(frequencySignal)-min(frequencySignal)
@@ -70,6 +70,8 @@ export default class AudioAnalyzer extends Component {
 
     this.signalOverTime = new Array(TIME_LENGTH * 4)
     fill(this.signalOverTime, 0)
+
+    this.distanceByBand = new Float32Array([0, 0, 0, 0])
   }
 
   componentWillUnmount() {
@@ -82,12 +84,16 @@ export default class AudioAnalyzer extends Component {
     const dataArray = new Uint8Array(bufferLength)
     analyzer.getByteTimeDomainData(dataArray)
 
-    this.signalOverTime.shift()
-    this.signalOverTime.shift()
-    this.signalOverTime.shift()
-    this.signalOverTime.shift()
+    const audioBands = getAudioBands(dataArray, bufferLength)
 
-    this.signalOverTime.push(...getAudioBands(dataArray, bufferLength))
+    this.distanceByBand = map(this.distanceByBand, (distance, i) => (
+      distance + audioBands[i] / 10.0
+    ))
+    
+    this.signalOverTime = drop(this.signalOverTime, 4)
+    this.signalOverTime.push(...audioBands)
+
+    //    console.log(this.signalOverTime[28], this.signalOverTime[29], this.signalOverTime[30], this.signalOverTime[31])
 
     // const texCoords = new Uint8Array(TIME_LENGTH * 4)
 
@@ -115,6 +121,7 @@ export default class AudioAnalyzer extends Component {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
   }
 
+  getDistanceByBand() { return this.distanceByBand }
   getTexture() { return this.texture }
 
   render() { return null }
