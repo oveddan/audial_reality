@@ -57,7 +57,11 @@ class Main extends Component {
   render () {
     return (
       <Scene width={this.props.containerWidth} height={this.props.containerHeight} >
-        <AudioAnalyzer fftSize={32} ref={this.setAnalyzer} />
+        <AudioAnalyzer 
+          fftSize={32} 
+          ref={this.setAnalyzer}
+          volume={this.props.volume}
+        />
         <PerspectiveCamera ref={this.setCamera} width={this.props.containerWidth} height={this.props.containerHeight}/>
         {this.analyzer && this.camera && (
           <SceneSelector 

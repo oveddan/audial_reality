@@ -47,6 +47,10 @@ const getAnalyzer = fftSize => {
   return analyzer
 }
 
+const amplify = (audioBands, volume) => (
+  map(audioBands, audioBand => audioBand * volume)
+)
+
 const TIME_LENGTH = 10*60
 
 export default class AudioAnalyzer extends Component {
@@ -86,13 +90,15 @@ export default class AudioAnalyzer extends Component {
 
     const audioBands = getAudioBands(dataArray, bufferLength)
 
+    const amplifiedBands = amplify(audioBands, this.props.volume)
+
     this.distanceByBand = map(this.distanceByBand, (distance, i) => (
-      distance + audioBands[i] / 10.0
+      distance + amplifiedBands[i] / 10.0
     ))
   
     //    console.log(this.distanceByBand)
     this.signalOverTime = drop(this.signalOverTime, 4)
-    this.signalOverTime.push(...audioBands)
+    this.signalOverTime.push(...amplifiedBands)
 
     //    console.log(this.signalOverTime[28], this.signalOverTime[29], this.signalOverTime[30], this.signalOverTime[31])
 
