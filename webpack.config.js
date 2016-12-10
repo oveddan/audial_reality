@@ -8,7 +8,7 @@ var PATHS = {
   OUTPUT : path.join(__dirname, 'dist'),
   SOURCE : path.join(__dirname, 'src'),
   OBJECTS : path.join(__dirname, 'objects'),
-  LIB: path.join(__dirname, 'src', 'lib'),
+  LIB: path.join(__dirname, 'src', 'lib')
 }
 
 var config = {
@@ -33,9 +33,11 @@ var config = {
         loader: 'file-loader'
       },
       {
-        test: /\.(glsl|obj)$/,
+        test: /\.obj$/,
         loader: 'raw'
-      }
+      },
+      { test: /\.glsl$/, loader: 'raw', exclude: /node_modules/ },
+      { test: /\.glsl$/, loader: 'glslify', exclude: /node_modules/ }
     ]
   },
   plugins : [
