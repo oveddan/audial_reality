@@ -41,14 +41,16 @@ const getAnalyzer = fftSize => {
     }
   )
   } else {
-     console.log('getUserMedia not supported on your browser!')
+    console.log('getUserMedia not supported on your browser!')
   }
 
   return analyzer
 }
 
+const AUDIO_MAGNIFICATION = 4
+
 const amplify = (audioBands, volume) => (
-  map(audioBands, audioBand => audioBand * volume)
+  map(audioBands, audioBand => (audioBand * volume) * AUDIO_MAGNIFICATION)
 )
 
 const TIME_LENGTH = 10*60

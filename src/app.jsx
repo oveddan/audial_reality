@@ -3,7 +3,7 @@ import Main from './Main'
 import { clamp } from 'lodash'
 
 const TAB = 9
-const NUMBER_OF_SCENES = 2
+const NUMBER_OF_SCENES = 3
 const MINUS = 189
 const EQUAL = 187
 

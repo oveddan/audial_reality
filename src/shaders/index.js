@@ -1,15 +1,17 @@
 import vertex from './vertex.glsl'
-import soundWaves from './sound_waves.glsl'
 import pulsingSphere from './pulsing_sphere.glsl'
+import soundGlobs from './sound_globs.glsl'
 import flash from './flash.glsl'
-
-import { mapValues } from 'lodash'
+import travelingSound from './traveling_sound.glsl'
+import avigdor from './avigdor.glsl'
 
 const shaders = {
   vertex,
-  soundWaves,
+  travelingSound,
   pulsingSphere,
-  flash
+  flash,
+  soundGlobs,
+  avigdor
 }
 
 export default shaders

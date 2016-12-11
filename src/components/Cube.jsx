@@ -117,9 +117,9 @@ export default class Cube extends Component {
     gl.uniformMatrix4fv(uniforms.transform, false, transpose(this.transformation))
     gl.uniform3fv(uniforms.center, center)
 
-    const time = Number(new Date().getTime() - now) / 1000.0
+    const time = Number(new Date().getTime() - now)
 
-    gl.uniform1f(uniforms.time, time)
+    gl.uniform1f(uniforms.time, time / 100)
 
     this.vertexBuffer.bind()
     gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)

@@ -8,29 +8,48 @@ import AudioAnalyzer from './components/AudioAnalyzer'
 import shaders from 'shaders'
 
 const PulsingSphere = props => (
-  <Cube key='2' 
+  <Cube key='2'
     {...props}
-    position={[0, 0, 0.0]} 
-    scale={[1.0, 1.0, 1.0]} 
+    position={[0, 0, 0.0]}
+    scale={[1.0, 1.0, 1.0]}
     fragmentShader={shaders.pulsingSphere}
   />
 )
 
 const SoundWaveVortex = props => (
-  <Cube key='2' 
+  <div>
+    <Cube key='1'
+      {...props}
+      position={[0, 0, -5.0]}
+      scale={[0.5, 0.5, 0.5]}
+      fragmentShader={shaders.soundGlobs}
+    />
+    <Cube key='2'
+      {...props}
+      position={[0, 0, 0]}
+      scale={[1.5, 1.5, 100.0]}
+      fragmentShader={shaders.travelingSound}
+    />
+  </div>
+)
+
+const Avigdor = props => (
+  <Cube
     {...props}
-    position={[0, 0, 0.0]} 
-    scale={[3.0, 3.0, 3.0]} 
-    fragmentShader={shaders.soundWaves}
+    position={[0, 0, -2]}
+    scale={[1, 1, 0.00001]}
+    fragmentShader={shaders.avigdor}
   />
 )
 
 const SceneSelector = props => {
   switch(props.scene) {
-  case 0:
+  case 2:
     return <SoundWaveVortex {...props} />
   case 1:
     return <PulsingSphere {...props} />
+  case 0:
+    return <Avigdor {...props} />
   default:
     return <div />
   }
@@ -57,14 +76,14 @@ class Main extends Component {
   render () {
     return (
       <Scene width={this.props.containerWidth} height={this.props.containerHeight} >
-        <AudioAnalyzer 
-          fftSize={32} 
+        <AudioAnalyzer
+          fftSize={32}
           ref={this.setAnalyzer}
           volume={this.props.volume}
         />
         <PerspectiveCamera ref={this.setCamera} width={this.props.containerWidth} height={this.props.containerHeight}/>
         {this.analyzer && this.camera && (
-          <SceneSelector 
+          <SceneSelector
             scene={this.props.scene}
             camera={this.camera}
             analyzer={this.analyzer}
