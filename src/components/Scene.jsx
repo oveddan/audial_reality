@@ -14,20 +14,6 @@ const initWebGL = canvas => {
   return gl
 }
 
-const initBuffers = gl => {
-  const squareVerticesBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer)
-  
-  const vertices = [
-    1.0,  1.0,  0.0,
-    -1.0, 1.0,  0.0,
-    1.0,  -1.0, 0.0,
-    -1.0, -1.0, 0.0
-  ]
-  
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
-}
-
 export default class Scene extends Component {
   constructor(props) {
     super(props)
@@ -42,17 +28,15 @@ export default class Scene extends Component {
     this.gl = gl
     this.childDraws = []
 
+    
     // Set clear color to black, fully opaque
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    // Enable depth testing
-    gl.enable(gl.DEPTH_TEST)
-    // Near things obscure far things
-    gl.depthFunc(gl.LEQUAL)
     // Clear the color as well as the depth buffer.
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    
-    initBuffers(gl)
 
+    // Enable depth testing
+    gl.enable(gl.DEPTH_TEST)
+    
     this.draw()
 
     this.setState({
@@ -71,11 +55,10 @@ export default class Scene extends Component {
   draw() {
     const gl = this.gl
 
+    gl.enable(gl.DEPTH_TEST)
+
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     gl.viewport(0, 0, this.props.width, this.props.height)
-  
-    gl.enable(gl.DEPTH_TEST)
-    gl.depthFunc(gl.LESS)
 
     each(this.childDraws, draw => draw(this.gl))
 

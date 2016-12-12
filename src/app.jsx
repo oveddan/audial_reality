@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
+import { clamp, size, keys } from 'lodash'
+
 import Main from './Main'
-import { clamp } from 'lodash'
+import Scenes from './scenes'
 
 const TAB = 9
-const NUMBER_OF_SCENES = 3
+const NUMBER_OF_SCENES = size(Scenes) 
 const MINUS = 189
 const EQUAL = 187
 

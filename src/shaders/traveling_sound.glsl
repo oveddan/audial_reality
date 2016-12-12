@@ -34,7 +34,7 @@ void main() {
   vec4 current = texture2D(uSampler, vec2(0.1, 0.5));
 
   vec4 directionToPerimeter = vec4(normalize(position.xy - center.xy), 0., 0.);
-  vec4 positionToUse = position + directionToPerimeter * .1;
+  vec4 positionToUse = position + directionToPerimeter * .1 + snoise(position.xyz);
 
   float dist = distance(soundOrigin, positionToUse);
 

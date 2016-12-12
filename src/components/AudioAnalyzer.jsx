@@ -8,10 +8,10 @@ const getRange = frequencySignal => (
 const getAudioBands = (frequencySignal, fftSize) => {
   const groupedByRange = chunk(frequencySignal, Math.ceil(fftSize / 3))
   return [
-    getRange(frequencySignal),
     getRange(groupedByRange[0]),
     getRange(groupedByRange[1]),
-    getRange(groupedByRange[2])
+    getRange(groupedByRange[2]),
+    getRange(frequencySignal)
   ]
 }
 
@@ -47,7 +47,7 @@ const getAnalyzer = fftSize => {
   return analyzer
 }
 
-const AUDIO_MAGNIFICATION = 4
+const AUDIO_MAGNIFICATION = 10
 
 const amplify = (audioBands, volume) => (
   map(audioBands, audioBand => (audioBand * volume) * AUDIO_MAGNIFICATION)
@@ -63,13 +63,6 @@ export default class AudioAnalyzer extends Component {
     const gl = this.context.gl
 
     this.texture = gl.createTexture()
-
-    // gl.bindTexture(gl.TEXTURE_2D, texture);
-    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-    // gl.generateMipmap(gl.TEXTURE_2D);
-    // gl.bindTexture(gl.TEXTURE_2D, null);
 
     this.draw = this.draw.bind(this)
     this.context.registerChildDraw(this.draw)
@@ -97,31 +90,9 @@ export default class AudioAnalyzer extends Component {
     this.distanceByBand = map(this.distanceByBand, (distance, i) => (
       distance + amplifiedBands[i] / 10.0
     ))
-  
-    //    console.log(this.distanceByBand)
+
     this.signalOverTime = drop(this.signalOverTime, 4)
     this.signalOverTime.push(...amplifiedBands)
-
-    //    console.log(this.signalOverTime[28], this.signalOverTime[29], this.signalOverTime[30], this.signalOverTime[31])
-
-    // const texCoords = new Uint8Array(TIME_LENGTH * 4)
-
-    // for(let i = 0; i < TIME_LENGTH; i++) {
-      // const start = i * 4
-
-      // const signalAtTime = this.signalOverTime[i] 
-      // if (signalAtTime) {
-        // texCoords[start] = signalAtTime[0]
-        // texCoords[start + 1] = signalAtTime[1]
-        // texCoords[start + 1] = signalAtTime[2]
-        // texCoords[start + 1] = signalAtTime[1]
-      // }
-      // // texCoords[start + 1] = 0
-      // // texCoords[start + 2] = 0
-    // } 
-
-    // //console.log(this.signalOverTime)
-    // console.log(texCoords)
 
     gl.bindTexture(gl.TEXTURE_2D, this.texture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, TIME_LENGTH, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(this.signalOverTime))
