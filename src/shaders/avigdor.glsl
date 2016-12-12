@@ -24,9 +24,7 @@ void main() {
   float dist = distance(vec2(0.0, 0.0), sin(position.xy*max(-5., min(5., tan(u_time/20.)))+5.));
 
 
-
   float distNormalized = smoothstep(0.0, soundDistance, dist);
-
 
 
   vec4 currentSound = texture2D(uSampler, vec2(1. - distNormalized, 0.5));
