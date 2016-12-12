@@ -21,7 +21,11 @@ vec4 soundOrigin = vec4(0.0, 0., 0.0, 5.0);
 void main() {
   vec4 current = texture2D(uSampler, vec2(0.1, 0.5));
 
-  float dist = distance(vec2(0.0, 0.0), sin(position.xy*max(-5., min(5., tan(u_time/20.)))+5.));
+  // float bounded_time = float(u_time - mod(u_time, 100.))
+
+
+
+  float dist = distance(vec2(0.0, 0.0), sin(position.xy*mod(u_time, 40.)/2.));
 
 
   float distNormalized = smoothstep(0.0, soundDistance, dist);

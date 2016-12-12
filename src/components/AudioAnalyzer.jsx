@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { fill, min, max, chunk, map, drop } from 'lodash'
+import AudioSmoother from './AudioSmoother'
 
 const getRange = frequencySignal => (
   max(frequencySignal)-min(frequencySignal)
@@ -8,10 +9,10 @@ const getRange = frequencySignal => (
 const getAudioBands = (frequencySignal, fftSize) => {
   const groupedByRange = chunk(frequencySignal, Math.ceil(fftSize / 3))
   return [
-    getRange(frequencySignal),
     getRange(groupedByRange[0]),
     getRange(groupedByRange[1]),
-    getRange(groupedByRange[2])
+    getRange(groupedByRange[2]),
+    getRange(frequencySignal)
   ]
 }
 
@@ -47,7 +48,7 @@ const getAnalyzer = fftSize => {
   return analyzer
 }
 
-const AUDIO_MAGNIFICATION = 4
+const AUDIO_MAGNIFICATION = 10
 
 const amplify = (audioBands, volume) => (
   map(audioBands, audioBand => (audioBand * volume) * AUDIO_MAGNIFICATION)
@@ -64,80 +65,56 @@ export default class AudioAnalyzer extends Component {
 
     this.texture = gl.createTexture()
 
-    // gl.bindTexture(gl.TEXTURE_2D, texture);
-    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-    // gl.generateMipmap(gl.TEXTURE_2D);
-    // gl.bindTexture(gl.TEXTURE_2D, null);
+      this.preDraw= this.preDraw.bind(this)
+      this.context.registerChildPreDraw(this.preDraw)
 
-    this.draw = this.draw.bind(this)
-    this.context.registerChildDraw(this.draw)
+      this.signalOverTime = new Array(TIME_LENGTH * 4)
+      fill(this.signalOverTime, 0)
 
-    this.signalOverTime = new Array(TIME_LENGTH * 4)
-    fill(this.signalOverTime, 0)
+      this.distanceByBand = new Float32Array([0, 0, 0, 0])
 
-    this.distanceByBand = new Float32Array([0, 0, 0, 0])
-  }
+      this.audioSmoother = new AudioSmoother(gl)
+    }
 
-  componentWillUnmount() {
-    this.context.unregisterChildDraw(this.draw)
-  }
+    componentWillUnmount() {
+      this.context.unregisterChildPreDraw(this.preDraw)
+    }
 
-  draw(gl) {
-    const analyzer = this.analyzer
-    const bufferLength = analyzer.frequencyBinCount
-    const dataArray = new Uint8Array(bufferLength)
-    analyzer.getByteTimeDomainData(dataArray)
+    preDraw(gl) {
+      const analyzer = this.analyzer
+      const bufferLength = analyzer.frequencyBinCount
+      const dataArray = new Uint8Array(bufferLength)
+      analyzer.getByteTimeDomainData(dataArray)
 
-    const audioBands = getAudioBands(dataArray, bufferLength)
+      const audioBands = getAudioBands(dataArray, bufferLength)
 
-    const amplifiedBands = amplify(audioBands, this.props.volume)
+      const amplifiedBands = amplify(audioBands, this.props.volume)
 
-    this.distanceByBand = map(this.distanceByBand, (distance, i) => (
-      distance + amplifiedBands[i] / 10.0
-    ))
-  
-    //    console.log(this.distanceByBand)
-    this.signalOverTime = drop(this.signalOverTime, 4)
-    this.signalOverTime.push(...amplifiedBands)
+      this.distanceByBand = map(this.distanceByBand, (distance, i) => (
+        distance + amplifiedBands[i] / 10.0
+      ))
 
-    //    console.log(this.signalOverTime[28], this.signalOverTime[29], this.signalOverTime[30], this.signalOverTime[31])
+      this.signalOverTime = drop(this.signalOverTime, 4)
+      this.signalOverTime.push(...amplifiedBands)
 
-    // const texCoords = new Uint8Array(TIME_LENGTH * 4)
+      gl.bindTexture(gl.TEXTURE_2D, this.texture)
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, TIME_LENGTH, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(this.signalOverTime))
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-    // for(let i = 0; i < TIME_LENGTH; i++) {
-      // const start = i * 4
-
-      // const signalAtTime = this.signalOverTime[i] 
-      // if (signalAtTime) {
-        // texCoords[start] = signalAtTime[0]
-        // texCoords[start + 1] = signalAtTime[1]
-        // texCoords[start + 1] = signalAtTime[2]
-        // texCoords[start + 1] = signalAtTime[1]
-      // }
-      // // texCoords[start + 1] = 0
-      // // texCoords[start + 2] = 0
-    // } 
-
-    // //console.log(this.signalOverTime)
-    // console.log(texCoords)
-
-    gl.bindTexture(gl.TEXTURE_2D, this.texture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, TIME_LENGTH, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(this.signalOverTime))
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+      this.audioSmoother.draw(gl, this.texture)
   }
 
   getDistanceByBand() { return this.distanceByBand }
   getTexture() { return this.texture }
+  getSmoothTexture() { return this.audioSmoother.getTexture() }
 
   render() { return null }
 }
 
 AudioAnalyzer.contextTypes = {
   gl: React.PropTypes.object.isRequired,
-  registerChildDraw: React.PropTypes.func.isRequired,
-  unregisterChildDraw: React.PropTypes.func.isRequired
+  registerChildPreDraw: React.PropTypes.func.isRequired,
+  unregisterChildPreDraw: React.PropTypes.func.isRequired
 }

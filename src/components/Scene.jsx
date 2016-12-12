@@ -14,20 +14,6 @@ const initWebGL = canvas => {
   return gl
 }
 
-const initBuffers = gl => {
-  const squareVerticesBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer)
-  
-  const vertices = [
-    1.0,  1.0,  0.0,
-    -1.0, 1.0,  0.0,
-    1.0,  -1.0, 0.0,
-    -1.0, -1.0, 0.0
-  ]
-  
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
-}
-
 export default class Scene extends Component {
   constructor(props) {
     super(props)
@@ -40,19 +26,18 @@ export default class Scene extends Component {
     const gl = initWebGL(this.canvas)
 
     this.gl = gl
+    this.childPreDraws = []
     this.childDraws = []
 
+    
     // Set clear color to black, fully opaque
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    // Enable depth testing
-    gl.enable(gl.DEPTH_TEST)
-    // Near things obscure far things
-    gl.depthFunc(gl.LEQUAL)
     // Clear the color as well as the depth buffer.
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    
-    initBuffers(gl)
 
+    // Enable depth testing
+    gl.enable(gl.DEPTH_TEST)
+    
     this.draw()
 
     this.setState({
@@ -64,18 +49,21 @@ export default class Scene extends Component {
     return { 
       gl: this.gl, 
       registerChildDraw: fn => this.registerChildDraw(fn),
-      unregisterChildDraw: fn => this.unregisterChildDraw(fn)
+      unregisterChildDraw: fn => this.unregisterChildDraw(fn),
+      registerChildPreDraw: fn => this.registerChildPreDraw(fn),
+      unregisterChildPreDraw: fn => this.unregisterChildPreDraw(fn)
     }
   }
 
   draw() {
+    each(this.childPreDraws, preDraw => preDraw(this.gl))
+
     const gl = this.gl
+
+    gl.enable(gl.DEPTH_TEST)
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     gl.viewport(0, 0, this.props.width, this.props.height)
-  
-    gl.enable(gl.DEPTH_TEST)
-    gl.depthFunc(gl.LESS)
 
     each(this.childDraws, draw => draw(this.gl))
 
@@ -94,6 +82,14 @@ export default class Scene extends Component {
     pull(this.childDraws, fn)
   }
 
+  registerChildPreDraw(fn) {
+    this.childPreDraws.push(fn)
+  }
+
+  unregisterChildPreDraw(fn) {
+    pull(this.childPreDraws, fn)
+  }
+
   render() {
     return (
       <div>
@@ -107,7 +103,9 @@ export default class Scene extends Component {
 Scene.childContextTypes = {
   gl: React.PropTypes.object,
   registerChildDraw: React.PropTypes.func,
-  unregisterChildDraw: React.PropTypes.func.isRequired
+  unregisterChildDraw: React.PropTypes.func.isRequired,
+  registerChildPreDraw: React.PropTypes.func.isRequired,
+  unregisterChildPreDraw: React.PropTypes.func.isRequired
 }
 
 

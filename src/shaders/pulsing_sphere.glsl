@@ -94,38 +94,38 @@ vec3 soundOrigin = vec3(0.0, 0.0, -10.0);
 
 float radius = 1.;
 
-vec3 full = vec3(55., 114., 255.) / 255.0;
+vec3 full = vec3(162., 250., 163.) / 255.0;
 vec3 second = vec3(226., 239, 112.) / 255.;
 vec3 third = vec3(112., 228., 239.) / 255.;
 
 void main() {
   vec4 current = texture2D(uSampler, vec2(1., 0.5));
 
-  vec2 vel = vec2(uDistance.g / 10.);
+  vec4 noisyPosition = position + snoise(position.xyz * 100.) / 10.;
 
-  vec3 noisyPos = vec3(position) + snoise(vec3(position * 50.)) / 10.;
+  float noisyRadius = radius + snoise(position.xyz* 20.) / 10.;
+
+  vec2 vel = vec2(uDistance.g / 10.);
 
   vec3 rayDirection = vec3(0., 0., -1.);
 
   float n = abs(noise((position.xy) * 10.));
 
-  vec3 rayHit = getRayHit(vec3(center), radius, vec3(noisyPos.x, noisyPos.y, 1.), rayDirection);
+  vec3 rayHit = getRayHit(vec3(center), radius, vec3(position.x, position.y, 1.), rayDirection);
 
   vec3 pixel;
   if (rayHit != noRayHit) {
-    vec3 normal = normalize(vec3(center) - rayHit);
+    vec3 normal = normalize(vec3(center) - (rayHit + snoise(rayHit * 5. + uDistance[0] / 100.)));
 
     float distToCenter = distance(rayHit, vec3(center)) / radius;
 
-//    vec3 noisyNormal = normalize(normal + vec3(snoise(rayHit * 3.)));
-
-    float strength = smoothstep(0., 1., dot(rayDirection, normal));
+    float strength = dot(rayDirection, normal);
 
     vec3 flashSecond = mix(rgb2hsb(second), rgb2hsb(third), abs(sin(uDistance.b)));
 
-    vec3 color = mix(rgb2hsb(full), flashSecond, snoise((position.xyz + uDistance.r / 1000.) * 5.) * normal);
+    vec3 color = mix(full, second, strength);
 
-    pixel = hsb2rgb(color) * normal;
+    pixel = full * strength;
   }
 
   gl_FragColor = vec4(pixel, 1.0);

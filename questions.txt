@@ -1,0 +1,5 @@
+interpolating between colors - which space?
+
+how to simulate glowing/spark?
+
+best way for sphere?

@@ -4,6 +4,9 @@ import soundGlobs from './sound_globs.glsl'
 import flash from './flash.glsl'
 import travelingSound from './traveling_sound.glsl'
 import avigdor from './avigdor.glsl'
+import ocean from './ocean.glsl'
+import white from './white.glsl'
+import bands from './bands.glsl'
 
 const shaders = {
   vertex,
@@ -11,7 +14,10 @@ const shaders = {
   pulsingSphere,
   flash,
   soundGlobs,
-  avigdor
+  avigdor,
+  ocean,
+  white,
+  bands
 }
 
 export default shaders
