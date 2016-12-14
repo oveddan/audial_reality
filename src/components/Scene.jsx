@@ -26,6 +26,7 @@ export default class Scene extends Component {
     const gl = initWebGL(this.canvas)
 
     this.gl = gl
+    this.childPreDraws = []
     this.childDraws = []
 
     
@@ -48,11 +49,15 @@ export default class Scene extends Component {
     return { 
       gl: this.gl, 
       registerChildDraw: fn => this.registerChildDraw(fn),
-      unregisterChildDraw: fn => this.unregisterChildDraw(fn)
+      unregisterChildDraw: fn => this.unregisterChildDraw(fn),
+      registerChildPreDraw: fn => this.registerChildPreDraw(fn),
+      unregisterChildPreDraw: fn => this.unregisterChildPreDraw(fn)
     }
   }
 
   draw() {
+    each(this.childPreDraws, preDraw => preDraw(this.gl))
+
     const gl = this.gl
 
     gl.enable(gl.DEPTH_TEST)
@@ -77,6 +82,14 @@ export default class Scene extends Component {
     pull(this.childDraws, fn)
   }
 
+  registerChildPreDraw(fn) {
+    this.childPreDraws.push(fn)
+  }
+
+  unregisterChildPreDraw(fn) {
+    pull(this.childPreDraws, fn)
+  }
+
   render() {
     return (
       <div>
@@ -90,7 +103,9 @@ export default class Scene extends Component {
 Scene.childContextTypes = {
   gl: React.PropTypes.object,
   registerChildDraw: React.PropTypes.func,
-  unregisterChildDraw: React.PropTypes.func.isRequired
+  unregisterChildDraw: React.PropTypes.func.isRequired,
+  registerChildPreDraw: React.PropTypes.func.isRequired,
+  unregisterChildPreDraw: React.PropTypes.func.isRequired
 }
 
 

@@ -92,11 +92,10 @@ export default class Cube extends Component {
       center: this.shaderProgram.getUniform('uCenter'),
       distance: this.shaderProgram.getUniform('uDistance'),
       time: this.shaderProgram.getUniform('u_time'),
-      sampler: this.shaderProgram.getUniform('uSampler')
+      sampler: this.shaderProgram.getUniform('uSampler'),
+      smoothSampler: this.shaderProgram.getUniform('uSmoothSampler')
     }
 
-    console.log('unifroms:', this.uniforms)
-  
     this.draw = this.draw.bind(this)
     this.context.registerChildDraw(this.draw)
   }
@@ -125,8 +124,12 @@ export default class Cube extends Component {
     gl.vertexAttribPointer(this.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
 
     gl.activeTexture(gl.TEXTURE0)
-    gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getTexture())
+    gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getSmoothTexture())
     gl.uniform1i(uniforms.sampler, 0)
+
+    // gl.activeTexture(gl.TEXTURE1)
+    // gl.bindTexture(gl.TEXTURE_2D, this.props.analyzer.getSmoothTexture())
+    // gl.uniform1i(uniforms.smoothSampler, 1)
 
     gl.uniform4fv(uniforms.distance, this.props.analyzer.getDistanceByBand())
 

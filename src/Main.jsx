@@ -16,10 +16,16 @@ class Main extends Component {
 
     this.setAnalyzer = this.setAnalyzer.bind(this)
     this.setCamera = this.setCamera.bind(this)
+    this.setAudioSmoother = this.setAudioSmoother.bind(this)
   }
 
   setAnalyzer(analyzer) {
     this.analyzer = analyzer
+    this.forceUpdate()
+  }
+
+  setAudioSmoother(smoother) {
+    this.audioSmoother = smoother
     this.forceUpdate()
   }
 

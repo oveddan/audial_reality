@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { fill, min, max, chunk, map, drop } from 'lodash'
+import AudioSmoother from './AudioSmoother'
 
 const getRange = frequencySignal => (
   max(frequencySignal)-min(frequencySignal)
@@ -64,20 +65,22 @@ export default class AudioAnalyzer extends Component {
 
     this.texture = gl.createTexture()
 
-    this.draw = this.draw.bind(this)
-    this.context.registerChildDraw(this.draw)
+    this.preDraw= this.preDraw.bind(this)
+    this.context.registerChildPreDraw(this.preDraw)
 
     this.signalOverTime = new Array(TIME_LENGTH * 4)
     fill(this.signalOverTime, 0)
 
     this.distanceByBand = new Float32Array([0, 0, 0, 0])
+
+    this.audioSmoother = new AudioSmoother(gl)
   }
 
   componentWillUnmount() {
-    this.context.unregisterChildDraw(this.draw)
+    this.context.unregisterChildPreDraw(this.preDraw)
   }
 
-  draw(gl) {
+  preDraw(gl) {
     const analyzer = this.analyzer
     const bufferLength = analyzer.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength)
@@ -99,16 +102,19 @@ export default class AudioAnalyzer extends Component {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+    this.audioSmoother.draw(gl, this.texture)
   }
 
   getDistanceByBand() { return this.distanceByBand }
   getTexture() { return this.texture }
+  getSmoothTexture() { return this.audioSmoother.getTexture() }
 
   render() { return null }
 }
 
 AudioAnalyzer.contextTypes = {
   gl: React.PropTypes.object.isRequired,
-  registerChildDraw: React.PropTypes.func.isRequired,
-  unregisterChildDraw: React.PropTypes.func.isRequired
+  registerChildPreDraw: React.PropTypes.func.isRequired,
+  unregisterChildPreDraw: React.PropTypes.func.isRequired
 }
