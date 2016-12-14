@@ -17,7 +17,6 @@ const squareVerteces = new Float32Array([
   -1, -1
 ])
 
-
 export default class AudioSmoother {
   constructor(gl) {
     this.shaderProgram = new ShaderProgram(gl, vertex, fragment)

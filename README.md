@@ -1,5 +1,6 @@
 # Audial Reality
 
+Visualizes sound in real-time using the audio input of a browser using webgl, shaders, and procedural noise.
 
 ## Setup
 
@@ -12,4 +13,9 @@ Start the development server:
 
     npm start
 
-    
+
+## Use
+
+With the development server running, open `http://localhost:3000/`
+
+Allow microphone access when prompted.  Hit the `tab` key to cycle through the visualizations.

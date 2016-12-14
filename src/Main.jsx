@@ -5,7 +5,6 @@ import PerspectiveCamera from './components/PerspectiveCamera'
 import AudioAnalyzer from './components/AudioAnalyzer'
 import Scenes from './scenes'
 
-
 const SceneSelector = props => (
   React.createElement(Scenes[props.scene], props)
 )
@@ -34,9 +33,16 @@ class Main extends Component {
     this.forceUpdate()
   }
 
+  componentDidMount() {
+    if (this.props.containerHeight === 0)
+      setTimeout(() => this.props.updateDimensions())
+  }
+
   render () {
+    if (this.props.containerHeight === 0) return null
+
     return (
-      <Scene width={this.props.containerWidth} height={this.props.containerHeight} >
+      <Scene width={this.props.containerWidth} height={this.props.containerHeight} onTouch={this.props.onTouch} >
         <AudioAnalyzer
           fftSize={32}
           ref={this.setAnalyzer}
@@ -49,6 +55,7 @@ class Main extends Component {
         {this.analyzer && this.camera && (
           <SceneSelector
             scene={this.props.scene}
+            width={this.props.containerWidth} height={this.props.containerHeight}
             camera={this.camera}
             analyzer={this.analyzer}
           />

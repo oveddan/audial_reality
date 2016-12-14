@@ -60,10 +60,10 @@ export default class Scene extends Component {
 
     const gl = this.gl
 
-    gl.enable(gl.DEPTH_TEST)
-
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     gl.viewport(0, 0, this.props.width, this.props.height)
+
+    gl.enable(gl.DEPTH_TEST)
 
     each(this.childDraws, draw => draw(this.gl))
 
@@ -72,6 +72,9 @@ export default class Scene extends Component {
       console.log('error:', error)
 
     window.requestAnimationFrame(() => this.draw())
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0)
+    gl.enable(gl.DEPTH_TEST)
   }
 
   registerChildDraw(fn) {
@@ -93,7 +96,7 @@ export default class Scene extends Component {
   render() {
     return (
       <div>
-        <canvas width={this.props.width} height={this.props.height} ref={canvas => { this.canvas = canvas }} />
+        <canvas onTouchStart={this.props.onTouch} width={this.props.width} height={this.props.height} ref={canvas => { this.canvas = canvas }} />
         {this.state.glLoaded && this.props.children}
       </div>
     )

@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { clamp, size, keys } from 'lodash'
+import { VOLUME } from 'src/constants'
 
 import Main from './Main'
 import Scenes from './scenes'
+
+import './app.scss'
 
 const TAB = 9
 const NUMBER_OF_SCENES = size(Scenes) 
@@ -13,13 +16,21 @@ export default class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { scene: 0, volume: 0.5 }
+    this.state = { scene: 0, volume: 1 }
 
     this.keyPress = this.keyPress.bind(this)
+    this.touchStart = this.touchStart.bind(this)
   }
+
   componentDidMount() {
     document.addEventListener('keydown', this.keyPress, false)
   }
+
+
+  touchStart(e) {
+    this.nextScene()
+  }
+
 
   keyPress(e) {
     const { keyCode } = e
@@ -42,7 +53,7 @@ export default class App extends Component {
   }
 
   changeVolume(change) {
-    const newVolume = clamp(this.state.volume + change, 0.0, 1.0)
+    const newVolume = clamp(this.state.volume + change, VOLUME.min, VOLUME.max)
 
     this.setState({
       volume: newVolume
@@ -60,6 +71,8 @@ export default class App extends Component {
   }
 
   render() {
-    return <Main {...this.state} />
+    return  (
+      <Main {...this.state}  onTouch={this.touchStart} />
+    )
   }
 } 

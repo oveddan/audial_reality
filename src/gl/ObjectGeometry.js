@@ -1,22 +1,12 @@
-import { each } from 'lodash'
-
-const addTo = (buffer, source, indeces) => {
-  each(indeces, index => {
-    const start = index -1
-    buffer.push(...source[start])
-  })
-}
+import { each, map } from 'lodash'
 
 export default class ObjectGeometry {
   constructor() {
     this.verteces = []
-    this.uvs = []
     this.normals = []
 
-    this.vertexBuffer = []
-    this.uvBuffer = []
-    this.normalBuffer = []
-    this.numVerteces = 0
+    this.faces = []
+    this.vertexNormals = []
   }
 
   addVertex(a, b, c) {
@@ -27,26 +17,21 @@ export default class ObjectGeometry {
     this.normals.push([a, b, c])
   }
 
-  addUv(a, b) {
-    this.uvs.push([a, b])
+  addFace({ vertexIndeces, normalIndeces }) {
+    this.faces.push(
+      ...map(vertexIndeces, vertexIndex => Number(vertexIndex) - 1)
+    )
+
+    each(vertexIndeces, (vertexIndex, i) => {
+      this.vertexNormals[Number(vertexIndex) -1 ] = this.normals[Number(normalIndeces[i])-1]
+    })
+
+   // console.log(...map(vertexIndeces, vertexIndex => Number(vertexIndex) - 1))
+   // console.log(map(normalIndeces, normalIndex => this.normals[Number(normalIndex) - 1]))
+
+    // each(normalIndeces, normalIndex => {
+      // this.vertexNormals.push(this.normals[Number(normalIndex) - 1])
+    // })
+
   }
-
-  addToVertexBuffer(a, b, c) {
-    // todo: handle d
-    const source = this.verteces
-
-    addTo(this.vertexBuffer, source, [a, b, c])
-    this.numVerteces += 3
-  }
-
-  addToUvBuffer(a, b, c)  {
-    const source = this.uvs
-    addTo(this.uvBuffer, source, [a, b, c])
-  }
-
-  addToNormalBuffer(a, b, c) {
-    const source = this.normals
-    addTo(this.normalBuffer, source, [a, b, c])
-  }
-
 }

@@ -2,22 +2,28 @@ import vertex from './vertex.glsl'
 import pulsingSphere from './pulsing_sphere.glsl'
 import soundGlobs from './sound_globs.glsl'
 import flash from './flash.glsl'
-import travelingSound from './traveling_sound.glsl'
+import cellularTube from './cellular_tube.glsl'
 import avigdor from './avigdor.glsl'
 import ocean from './ocean.glsl'
 import white from './white.glsl'
 import bands from './bands.glsl'
+import sunset from './sunset.glsl'
+import travelingSound from './traveling_sound.glsl'
+import radiatingSound from './radiating_sound.glsl'
 
 const shaders = {
   vertex,
-  travelingSound,
+  cellularTube,
   pulsingSphere,
   flash,
   soundGlobs,
   avigdor,
   ocean,
   white,
-  bands
+  bands,
+  sunset,
+  travelingSound,
+  radiatingSound
 }
 
 export default shaders

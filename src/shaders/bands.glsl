@@ -10,7 +10,9 @@ varying highp vec4 center;
 uniform float u_time;
 // audio inputs
 uniform sampler2D uSampler;
+uniform sampler2D uSmoothSampler;
 uniform vec4 uDistance;
+uniform vec4 uCurrent;
 
 vec2 dimensions = vec2(100., 100.);
 
@@ -24,27 +26,22 @@ vec2 tile(vec2 _st, float _zoom){
 
 float numBands = 3.;
 
+float numSections = 3.;
+
 float getSection(float x) {
-  float result = 0.;
-  
-  float sectionSize = 1./3.;
+  return floor(x * numSections);
+}
 
-  result += step(sectionSize, x);
-  result += step(sectionSize * 2., x);
+float getSubSection(float x) {
+  return floor(mod(x * 9., 3.));
+}
 
-  return result;
+float getSubSubSection(float x) {
+  return floor(mod(x * 18., 2.));
 }
 
 int getBand(float x) {
   float result = floor(mod(x*9., 3.0));
-//  float scaledX = fract(x, 3.);
-
-  /* float result = 0.; */
-  
-  /* float sectionSize = 1./3.; */
-
-  /* result += step(sectionSize, scaledX); */
-  /* result += step(sectionSize * 2., x * 3.); */
 
   return int(result);
 }
@@ -77,29 +74,36 @@ vec3 getBandColor(float fromLeft) {
 void main() {
   float sectionLength = 2./sections;
   vec2 actualPosition = position.xy / dimensions;
-  vec4 current = texture2D(uSampler, vec2(1., 0.5));
 
   float fromLeft = 1.0 - (1.0 - actualPosition.x) / 2.;
   float fromBottom = 1.0 - (1.0 - actualPosition.y) / 2.;
 
   float section = getSection(fromLeft);
+  float subSection = getSubSection(fromLeft);
 
 //  float section = step(0.5, fract(actualPosition.x));
 
   float bandStrength = 0.;
 
   if (section == 0.)
-    bandStrength = toBandStrength(current, fromLeft);
+    bandStrength = toBandStrength(texture2D(uSmoothSampler, vec2(.000001, .5)), fromLeft);
   
   if (section == 1.) {
     float n = noise(actualPosition * 100. + sin(u_time / 100.));
     bandStrength = toBandStrength(fract(uDistance / 1000.), fromLeft);
-    float noisyFromBottom = fromBottom + n * toBandStrength(current, fromLeft) / 4.;
+    float noisyFromBottom = fromBottom + n * toBandStrength(uCurrent, fromLeft) / 100.;
     bandStrength = 1.-step(bandStrength + 0.02, fromBottom) - (1.-step(bandStrength - 0.02, noisyFromBottom));
   }
 
-  if (section == 2.) { 
-    vec4 story = texture2D(uSampler, vec2(1.-fromBottom, .5));
+  if (section == 2.) {
+    float subSubSection = getSubSubSection(fromLeft);
+    vec4 story;
+
+    if (subSubSection == 0.)
+      story = texture2D(uSampler, vec2(1.-fromBottom, .5));
+    else
+      story = texture2D(uSmoothSampler, vec2(1.-fromBottom, .5));
+
     bandStrength = toBandStrength(story, fromLeft);
   }  
 

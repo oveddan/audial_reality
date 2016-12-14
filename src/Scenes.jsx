@@ -1,106 +1,180 @@
 import React from 'react'
 import shaders from 'shaders'
-import Cube from './components/cube'
+import Mesh from './components/mesh'
+import { rotate, degreeToRad } from 'lib/matrices'
+import geometry from 'src/geometry'
+
+const planeGeometry = geometry.getPlane()
+const sphereGeometry = geometry.getSphere()
+const tubeGeometry = geometry.getTube()
+const cubeGeometry= geometry.getCube()
+
+const quarterTurn = degreeToRad(90)
 
 const PulsingSphere = props => (
-  <Cube key='2'
+  <div>
+    <Mesh key='1'
+      {...props}
+      position={[0, 0, -2]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+    <Mesh key='2'
+      {...props}
+      position={[1, -1, -4]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+    <Mesh key='3'
+      {...props}
+      position={[-1, -1, -4]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+    <Mesh key='4'
+      {...props}
+      position={[-1, 1, -4]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+    <Mesh key='5'
+      {...props}
+      position={[1, 1, -4]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+    <Mesh key='6'
+      {...props}
+      position={[3, 0, -6]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+    <Mesh key='7'
+      {...props}
+      position={[-3, 0, -6]}
+      scale={[1.0, 1.0, 1.0]}
+      geometry={sphereGeometry}
+      fragmentShader={shaders.pulsingSphere}
+    />
+
+  </div>
+)
+
+const CellularTube = props => (
+  <div>
+    <Mesh key='2'
+      {...props}
+      position={[0, 0, 0]}
+      scale={[20, 20, 400]}
+      geometry={tubeGeometry}
+      fragmentShader={shaders.cellularTube}
+    />
+  </div>
+)
+
+const RadiatingSound = props => (
+  <Mesh key='2'
     {...props}
-    position={[0, 0, 0.0]}
-    scale={[1.0, 1.0, 1.0]}
-    fragmentShader={shaders.pulsingSphere}
+    position={[0, 0, -2]}
+    scale={[4, 4, 0.0001]}
+    rotate={[quarterTurn, 0, 0]}
+    fragmentShader={shaders.radiatingSound}
   />
 )
 
-const SoundWaveVortex = props => (
+const TravelingSound = props => (
   <div>
-    <Cube key='1'
-      {...props}
-      position={[0, 0, -5.0]}
-      scale={[0.5, 0.5, 0.5]}
-      fragmentShader={shaders.soundGlobs}
-    />
-    <Cube key='2'
+    <Mesh key='1'
       {...props}
       position={[0, 0, 0]}
-      scale={[1.5, 1.5, 100.0]}
+      scale={[1.5, 1.5, 100]}
+      geometry={cubeGeometry}
       fragmentShader={shaders.travelingSound}
     />
   </div>
 )
 
 const Avigdor = props => (
-  <Cube
+  <Mesh
     {...props}
     position={[0, 0, -2]}
-    scale={[1, 1, 0.00001]}
+    scale={[4, 4, 0.00001]}
+    rotate={[quarterTurn, 0, 0]}
     fragmentShader={shaders.avigdor}
   />
 )
 
+const lookDown = rotate(0.05, 'x')
+
+const oceanUniforms = {
+  uLight: {
+    type: 'uniform3fv',
+    value: new Float32Array([0.5, -0.05, -1])
+  }
+}
+
 const Ocean = props => (
   <div>
-    <Cube key='1'
+    <Mesh key='1'
       {...props}
-      position={[2, 0, 0]}
-      scale={[0.00001, 2, 100]}
+      geometry={planeGeometry}
+      position={[0, -40, 0]}
+      scale={[2000, 0.0001, 2000]}
+      cameraTransform={lookDown}
       fragmentShader={shaders.ocean}
+      uniforms={oceanUniforms}
     />
-    <Cube key='2'
+    <Mesh key='2'
       {...props}
-      position={[-2, 0, 0]}
-      scale={[0.00001, 2, 100]}
-      fragmentShader={shaders.ocean}
-    />
-    <Cube key='3'
-      {...props}
-      position={[0, 0, -200]}
-      scale={[15, 15, 0.0001]}
-      fragmentShader={shaders.white}
-    />
-  </div>
-)
-
-const DepthTest = props => (
-  <div>
-    <Cube key='1'
-      {...props}
-      position={[0.25, 0.25, -1]}
-      scale={[0.5, 0.5, 0.5]}
-      fragmentShader={shaders.ocean}
-    />
-    <Cube key='2'
-      {...props}
-      position={[0, 0, -5]}
-      scale={[0.5, 0.5, 0.5]}
-      fragmentShader={shaders.ocean}
-    />
-    <Cube key='3'
-      {...props}
-      position={[0.25, 0.25, -3]}
-      scale={[0.5, 0.5, 0.5]}
-      fragmentShader={shaders.white}
+      geometry={sphereGeometry}
+      position={[0, 0, 0]}
+      scale={[800,800, 1000]}
+      cameraTransform={lookDown}
+      fragmentShader={shaders.sunset}
+      uniforms={oceanUniforms}
     />
   </div>
 )
 
 const Bands = props => (
   <div>
-    <Cube key='1'
+    <Mesh key='1'
       {...props}
       position={[0, 0, -99]}
       scale={[100, 100, 0.0001]}
+      rotate={[quarterTurn, 0, 0]}
       fragmentShader={shaders.bands}
+    />
+  </div>
+)
+
+const Globs = props => (
+  <div>
+    <Mesh key='1'
+      {...props}
+      position={[0, 0, -2]}
+      scale={[4, 4, 0.0001]}
+      rotate={[quarterTurn, 0, 0]}
+      fragmentShader={shaders.soundGlobs}
     />
   </div>
 )
 
 const Scenes = [
   Bands,
-  SoundWaveVortex,
+  RadiatingSound,
+  TravelingSound,
   PulsingSphere,
+  Globs,
   Avigdor,
   Ocean,
-  DepthTest
+  CellularTube
 ]
 
 export default Scenes

@@ -5,15 +5,17 @@ precision mediump float;
 varying highp vec4 position;
 uniform sampler2D uSampler;
 
+float resolution = pow(2., 10.);
+
 vec4 gaussianBlur(float position) {
   vec4 sum = vec4(0.0);
 
-  for (int x = -3; x <= 3; x++) {
-    float adjust = float(x) / 1000.;
+  for (int x = -8; x <= 8; x++) {
+    float adjust = float(x) / resolution;
     sum += texture2D(uSampler, vec2(position + adjust, 0.5));
   }
 
-  sum = sum / 6.; 
+  sum = sum / 16.; 
 
   return sum;
 }

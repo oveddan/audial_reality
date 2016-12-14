@@ -45,13 +45,11 @@ const getAnalyzer = fftSize => {
     console.log('getUserMedia not supported on your browser!')
   }
 
-  return analyzer
+  return { analyzer, audioCtx }
 }
 
-const AUDIO_MAGNIFICATION = 10
-
 const amplify = (audioBands, volume) => (
-  map(audioBands, audioBand => (audioBand * volume) * AUDIO_MAGNIFICATION)
+  map(audioBands, audioBand => (audioBand * volume))
 )
 
 const TIME_LENGTH = 10*60
@@ -59,7 +57,9 @@ const TIME_LENGTH = 10*60
 export default class AudioAnalyzer extends Component {
   componentWillMount() {
 
-    this.analyzer = getAnalyzer(this.props.fftSize)
+    const { analyzer, audioCtx } = getAnalyzer(this.props.fftSize)
+    this.analyzer = analyzer
+    this.audioCtx = audioCtx
 
     const gl = this.context.gl
 
@@ -71,31 +71,40 @@ export default class AudioAnalyzer extends Component {
     this.signalOverTime = new Array(TIME_LENGTH * 4)
     fill(this.signalOverTime, 0)
 
+    this.bands = new Float32Array([0, 0, 0, 0])
     this.distanceByBand = new Float32Array([0, 0, 0, 0])
+
+    this.smoothDistanceByBand = new Float32Array([0, 0, 0, 0])
 
     this.audioSmoother = new AudioSmoother(gl)
   }
 
   componentWillUnmount() {
     this.context.unregisterChildPreDraw(this.preDraw)
+    this.audioCtx.close()
   }
 
   preDraw(gl) {
     const analyzer = this.analyzer
     const bufferLength = analyzer.frequencyBinCount
     const dataArray = new Uint8Array(bufferLength)
-    analyzer.getByteTimeDomainData(dataArray)
+    analyzer.getByteFrequencyData(dataArray)
+    analyzer.minDecibels = -80
 
     const audioBands = getAudioBands(dataArray, bufferLength)
 
-    const amplifiedBands = amplify(audioBands, this.props.volume)
+    this.bands = amplify(audioBands, this.props.volume)
 
     this.distanceByBand = map(this.distanceByBand, (distance, i) => (
-      distance + amplifiedBands[i] / 10.0
+      distance + this.bands[i] / 255.0
+    ))
+
+    this.smoothDistanceByBand = map(this.smoothDistanceByBand, (smoothDistance, i) => (
+      smoothDistance + (this.distanceByBand[i] - smoothDistance) * 1/8
     ))
 
     this.signalOverTime = drop(this.signalOverTime, 4)
-    this.signalOverTime.push(...amplifiedBands)
+    this.signalOverTime.push(...this.bands)
 
     gl.bindTexture(gl.TEXTURE_2D, this.texture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, TIME_LENGTH, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(this.signalOverTime))
@@ -104,9 +113,12 @@ export default class AudioAnalyzer extends Component {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
     this.audioSmoother.draw(gl, this.texture)
+
+    gl.bindTexture(gl.TEXTURE_2D, null)
   }
 
-  getDistanceByBand() { return this.distanceByBand }
+  getDistanceByBand() { return this.smoothDistanceByBand }
+  getBands() { return map(this.bands, band => band / 255.0) }
   getTexture() { return this.texture }
   getSmoothTexture() { return this.audioSmoother.getTexture() }
 

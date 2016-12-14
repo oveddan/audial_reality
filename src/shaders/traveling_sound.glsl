@@ -34,7 +34,7 @@ void main() {
   vec4 current = texture2D(uSampler, vec2(0.1, 0.5));
 
   vec4 directionToPerimeter = vec4(normalize(position.xy - center.xy), 0., 0.);
-  vec4 positionToUse = position + directionToPerimeter * .1 + snoise(position.xyz);
+  vec4 positionToUse = position + directionToPerimeter * .1;
 
   float dist = distance(soundOrigin, positionToUse);
 
@@ -49,7 +49,7 @@ void main() {
 
   vec3 color = mix(colorA, colorB, abs(snoise(positionToUse.xyz + uDistance[0] * 10.)));
 
-  float res = smoothstep(0.0, 0.1, currentSound[0]);
+  float res = smoothstep(.3, 1., currentSound[0]);
 
   gl_FragColor = vec4(color * res, 1.0);
 }

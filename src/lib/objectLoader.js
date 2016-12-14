@@ -129,8 +129,10 @@ export const loadObjectGeometry = objectFile => {
         // 0                     1    2    3    4    5    6   7          8
         // ['f 1//1 2//2 3//3', '1', '1', '2', '2', '3', '3', undefined, undefined]
 
-        objectGeometry.addToVertexBuffer(result[1], result[3], result[5], result[7])
-        objectGeometry.addToNormalBuffer(result[2], result[4], result[6], result[8])
+        objectGeometry.addFace({
+          vertexIndeces: [result[1], result[3], result[5]],
+          normalIndeces: [result[2], result[4], result[6]]
+        })
 
       } else if ( ( result = regexp.face_vertex.exec( line ) ) !== null ) {
 
