@@ -172,7 +172,6 @@ const Scenes = [
   TravelingSound,
   PulsingSphere,
   Globs,
-  Avigdor,
   Ocean,
   CellularTube
 ]
