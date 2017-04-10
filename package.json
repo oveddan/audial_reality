@@ -4,6 +4,7 @@
   "description": "Alter reality with audio",
   "main": "src/index.js",
   "dependencies": {
+    "classnames": "^2.2.5",
     "gl-matrix": "^2.3.2",
     "lodash": "^4.17.2",
     "node-sass": "^4.3.0",

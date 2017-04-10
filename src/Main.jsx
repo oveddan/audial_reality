@@ -3,6 +3,7 @@ import Dimensions from 'react-dimensions'
 import Scene from './components/scene'
 import PerspectiveCamera from './components/PerspectiveCamera'
 import AudioAnalyzer from './components/AudioAnalyzer'
+import SceneControls from './components/SceneControls'
 import Scenes from './scenes'
 
 const SceneSelector = props => (
@@ -42,25 +43,27 @@ class Main extends Component {
     if (this.props.containerHeight === 0) return null
 
     return (
-      <Scene width={this.props.containerWidth} height={this.props.containerHeight} onTouch={this.props.onTouch} >
-        <AudioAnalyzer
-          fftSize={32}
-          ref={this.setAnalyzer}
-          volume={this.props.volume}
-        />
-        <PerspectiveCamera ref={this.setCamera} 
-          width={this.props.containerWidth} 
-          height={this.props.containerHeight}
-        />
-        {this.analyzer && this.camera && (
-          <SceneSelector
-            scene={this.props.scene}
-            width={this.props.containerWidth} height={this.props.containerHeight}
-            camera={this.camera}
-            analyzer={this.analyzer}
+      <SceneControls nextScene={this.props.nextScene} previousScene={this.props.previousScene} >
+        <Scene width={this.props.containerWidth} height={this.props.containerHeight} onTouch={this.props.onTouch} >
+          <AudioAnalyzer
+            fftSize={32}
+            ref={this.setAnalyzer}
+            volume={this.props.volume}
           />
-        )}
-      </Scene>
+          <PerspectiveCamera ref={this.setCamera} 
+            width={this.props.containerWidth} 
+            height={this.props.containerHeight}
+          />
+          {this.analyzer && this.camera && (
+            <SceneSelector
+              scene={this.props.scene}
+              width={this.props.containerWidth} height={this.props.containerHeight}
+              camera={this.camera}
+              analyzer={this.analyzer}
+            />
+          )}
+        </Scene>
+      </SceneControls>
     )
   }
 }

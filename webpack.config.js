@@ -69,7 +69,8 @@ var buildConfig = assign({}, config, {
       lib: PATHS.LIB,
       shaders: path.join(__dirname, 'src', 'shaders'),
       src: path.join(__dirname, 'src'),
-      static: path.join(__dirname, 'static')
+      static: path.join(__dirname, 'static'),
+      styles: path.join(__dirname, 'src', 'styles')
     }
   }
 })

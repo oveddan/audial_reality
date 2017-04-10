@@ -20,6 +20,8 @@ export default class App extends Component {
 
     this.keyPress = this.keyPress.bind(this)
     this.touchStart = this.touchStart.bind(this)
+    this.nextScene = this.nextScene.bind(this)
+    this.previousScene = this.previousScene.bind(this)
   }
 
   componentDidMount() {
@@ -61,18 +63,33 @@ export default class App extends Component {
   }
 
   nextScene() {
-    let nextScene = this.state.scene + 1
-    if(nextScene === NUMBER_OF_SCENES)
-      nextScene = 0
+    let scene = this.state.scene + 1
+    if(scene === NUMBER_OF_SCENES)
+      scene = 0
 
     this.setState({
-      scene: nextScene
+      scene
+    })
+  }
+
+  previousScene() {
+    let scene = this.state.scene - 1
+    if(scene < 0)
+      scene = NUMBER_OF_SCENES - 1
+
+    this.setState({
+      scene
     })
   }
 
   render() {
     return  (
-      <Main {...this.state}  onTouch={this.touchStart} />
+      <Main 
+        {...this.state} 
+        onTouch={this.touchStart} 
+        nextScene={this.nextScene} 
+        previousScene={this.previousScene}
+      />
     )
   }
 } 

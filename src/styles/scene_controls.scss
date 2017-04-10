@@ -1,0 +1,24 @@
+@import 'bootstrap/carousel';
+
+$animation-duration: 0.2s;
+
+.controls {
+  &.hide {
+    -webkit-transition: opacity $animation-duration ease-in;
+    -moz-transition: opacity $animation-duration ease-in;
+    -o-transition: opacity $animation-duration ease-in;
+    opacity: 0;
+  }
+  &:not(.hide) {
+    -webkit-transition: opacity $animation-duration ease-in;
+    -moz-transition: opacity $animation-duration ease-in;
+    -o-transition: opacity $animation-duration ease-in;
+    opacity: 1;
+  }
+
+  > a {
+    cursor: pointer;
+  }
+}
+
+
