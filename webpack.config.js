@@ -6,7 +6,7 @@ var webpack = require('webpack')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var PATHS = {
-  OUTPUT : path.join(__dirname, 'dist'),
+  OUTPUT : path.join(__dirname, 'dist/static'),
   SOURCE : path.join(__dirname, 'src'),
   OBJECTS : path.join(__dirname, 'objects'),
   LIB: path.join(__dirname, 'src', 'lib')
