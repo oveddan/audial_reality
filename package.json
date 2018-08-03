@@ -48,7 +48,8 @@
     "lint": "eslint --ext .jsx,.js dev-server src && jscs -x dev-server src",
     "start": "env NODE_ENV=development node dev-server",
     "build": "env NODE_ENV=production webpack --config webpack.config.build.js",
-    "dist": "cp src/index.html dist/index.html && cd dist && zip dist.zip * -r && mv dist.zip .."
+    "dist": "cp src/index.html dist/index.html", 
+    "build_and_dist": "npm run build && npm run dist"
   },
   "author": "Dan Oved <oveddan@gmail.com>",
   "license": "ISC"
