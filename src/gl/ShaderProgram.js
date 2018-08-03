@@ -7,7 +7,7 @@ const getShader = (gl, source, type) => {
 
   // See if it compiled successfully
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    alert(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`)
+    console.error(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`)
     gl.deleteShader(shader)
     return null
   }
@@ -17,24 +17,41 @@ const getShader = (gl, source, type) => {
 
 export default class ShaderProgram {
   constructor(gl, vertex, fragment) {
+    this.gl = gl
     // Create the shader program
-    const shaderProgram = gl.createProgram()
-    gl.attachShader(shaderProgram, getShader(gl, vertex, gl.VERTEX_SHADER))
-    gl.attachShader(shaderProgram, getShader(gl, fragment, gl.FRAGMENT_SHADER))
-    gl.linkProgram(shaderProgram)
+
+    this.vertexShader = getShader(gl, vertex, gl.VERTEX_SHADER)
+    this.fragmentShader = getShader(gl, fragment, gl.FRAGMENT_SHADER)
+    const id = this.id = gl.createProgram()
+    gl.attachShader(id, this.vertexShader)
+    gl.attachShader(id, this.fragmentShader)
+    gl.linkProgram(id)
 
     // If creating the shader program failed, alert
 
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-      alert(`Unable to initialize the shader program: ${gl.getProgramInfoLog(shaderProgram)}`)
+    if (!gl.getProgramParameter(id, gl.LINK_STATUS)) {
+      console.error(`Unable to initialize the shader program: ${gl.getProgramInfoLog(id)}`)
     }
-
-    this.shaderProgram = shaderProgram
 
     this.bind(gl)
   }
 
-  bind(gl) {
-    gl.useProgram(this.shaderProgram)
+  bind() {
+    this.gl.useProgram(this.id)
+  }
+
+  free() {
+    this.gl.detachShader(this.id, this.vertexShader)
+    this.gl.detachShader(this.id, this.fragmentShader)
+    this.gl.deleteShader(this.vertexShader)
+    this.gl.deleteShader(this.fragmentShader)
+  }
+
+  getAttribute(name) {
+    return this.gl.getAttribLocation(this.id, name)
+  }
+
+  getUniform(name) {
+    return this.gl.getUniformLocation(this.id, name)
   }
 }

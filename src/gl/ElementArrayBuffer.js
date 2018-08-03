@@ -1,12 +1,11 @@
-export default class VertexBufferObject {
+export default class ElementArrayBuffer {
   constructor(gl) {
     this.gl = gl
+
     this.id = gl.createBuffer()
   }
-
   bind() {
-    const gl = this.gl
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.id)
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.id)
   }
 
   free() {
@@ -16,7 +15,6 @@ export default class VertexBufferObject {
   update(data) {
     const gl = this.gl
     this.bind()
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW)
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW)
   }
-
 }

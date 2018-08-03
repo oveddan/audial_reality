@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 import { each, pull } from 'lodash'
 
 const initWebGL = canvas => {
@@ -13,46 +14,35 @@ const initWebGL = canvas => {
   return gl
 }
 
-const horizAspect = 480.0/640.0
-
-const initBuffers = gl => {
-  const squareVerticesBuffer = gl.createBuffer()
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer)
-  
-  const vertices = [
-    1.0,  1.0,  0.0,
-    -1.0, 1.0,  0.0,
-    1.0,  -1.0, 0.0,
-    -1.0, -1.0, 0.0
-  ]
-  
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
-}
-
 export default class Scene extends Component {
   constructor(props) {
     super(props)
 
-    this.childDraws = []
+    this.state = {
+    }
   }
 
   componentDidMount() {
     const gl = initWebGL(this.canvas)
 
     this.gl = gl
+    this.childPreDraws = []
+    this.childDraws = []
 
+    
     // Set clear color to black, fully opaque
     gl.clearColor(0.0, 0.0, 0.0, 1.0)
-    // Enable depth testing
-    gl.enable(gl.DEPTH_TEST)
-    // Near things obscure far things
-    gl.depthFunc(gl.LEQUAL)
     // Clear the color as well as the depth buffer.
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    
-    initBuffers(gl)
 
+    // Enable depth testing
+    gl.enable(gl.DEPTH_TEST)
+    
     this.draw()
+
+    this.setState({
+      glLoaded: true
+    })
   }
 
   getChildContext() {
@@ -60,27 +50,31 @@ export default class Scene extends Component {
       gl: this.gl, 
       registerChildDraw: fn => this.registerChildDraw(fn),
       unregisterChildDraw: fn => this.unregisterChildDraw(fn),
+      registerChildPreDraw: fn => this.registerChildPreDraw(fn),
+      unregisterChildPreDraw: fn => this.unregisterChildPreDraw(fn)
     }
   }
 
   draw() {
+    each(this.childPreDraws, preDraw => preDraw(this.gl))
+
     const gl = this.gl
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-  
-    // perspectiveMatrix = makePerspective(45, 640.0/480.0, 0.1, 100.0)
-    
-    // loadIdentity()
-    // mvTranslate([-0.0, 0.0, -6.0])
-    
-    // gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer)
-    // gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0)
+    gl.viewport(0, 0, this.props.width, this.props.height)
 
-    // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-    //    React.Children.forEach(this.props.children, child => child.draw && child.draw())
+    gl.enable(gl.DEPTH_TEST)
+
     each(this.childDraws, draw => draw(this.gl))
 
+    const error = gl.getError()
+    if (error !== 0)
+      console.log('error:', error)
+
     window.requestAnimationFrame(() => this.draw())
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0)
+    gl.enable(gl.DEPTH_TEST)
   }
 
   registerChildDraw(fn) {
@@ -91,11 +85,19 @@ export default class Scene extends Component {
     pull(this.childDraws, fn)
   }
 
+  registerChildPreDraw(fn) {
+    this.childPreDraws.push(fn)
+  }
+
+  unregisterChildPreDraw(fn) {
+    pull(this.childPreDraws, fn)
+  }
+
   render() {
     return (
       <div>
-        <canvas width={640} height={480} ref={canvas => { this.canvas = canvas }} />
-        {this.gl && this.props.children}
+        <canvas onTouchStart={this.props.onTouch} width={this.props.width} height={this.props.height} ref={canvas => { this.canvas = canvas }} />
+        {this.state.glLoaded && this.props.children}
       </div>
     )
   }
@@ -104,5 +106,9 @@ export default class Scene extends Component {
 Scene.childContextTypes = {
   gl: React.PropTypes.object,
   registerChildDraw: React.PropTypes.func,
-  unregisterChildDraw: React.PropTypes.func.isRequired
+  unregisterChildDraw: React.PropTypes.func.isRequired,
+  registerChildPreDraw: React.PropTypes.func.isRequired,
+  unregisterChildPreDraw: React.PropTypes.func.isRequired
 }
+
+
