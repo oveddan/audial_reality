@@ -3,7 +3,7 @@ import { clamp, size, keys } from 'lodash'
 import { VOLUME } from 'src/constants'
 
 import Main from './Main'
-import Scenes from './scenes'
+import Scenes from './Scenes'
 
 import './app.scss'
 
