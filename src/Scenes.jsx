@@ -1,6 +1,6 @@
 import React from 'react'
 import shaders from 'shaders'
-import Mesh from './components/mesh'
+import Mesh from './components/Mesh'
 import { rotate, degreeToRad } from 'lib/matrices'
 import geometry from 'src/geometry'
 
