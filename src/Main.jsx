@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import Dimensions from 'react-dimensions'
-import Scene from './components/scene'
+import Scene from './components/Scene'
 import PerspectiveCamera from './components/PerspectiveCamera'
 import AudioAnalyzer from './components/AudioAnalyzer'
 import SceneControls from './components/SceneControls'
-import Scenes from './scenes'
+import Scenes from './Scenes'
 
 const SceneSelector = props => (
   React.createElement(Scenes[props.scene], props)
